@@ -1,0 +1,33 @@
+{
+  "developer": {
+    "name": "JanRie",
+    "url": "https://github.com/jrie"
+  },
+  "default_locale": "en",
+  "browser_action": {
+    "browser_style": true,
+    "default_title": "pic2up - picflash uploader",
+    "default_popup": "pic2up_start.html",
+    "default_icon": {
+    "16": "icons/pic2up_16.png",
+    "48": "icons/pic2up_48.png",
+    "128": "icons/pic2up_128.png"
+    }
+  },
+  "description": "A Picflash image uploader",
+  "icons": {
+    "16": "icons/pic2up_16.png",
+    "48": "icons/pic2up_48.png",
+    "128": "icons/pic2up_128.png"
+  },
+  "homepage_url": "https://github.com/jrie/pic2up",
+  "manifest_version": 2,
+  "name": "pic2up",
+  "version": "0.1.0",
+  "permissions": ["https://*.picflash.org/tool.php", "storage", "unlimitedStorage"],
+  "background": {
+    "scripts": [
+      "pic2up_ui.js"
+    ]
+  }
+}

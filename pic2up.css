@@ -1,0 +1,103 @@
+html,
+body {
+  padding: 0px;
+  margin: 0px;
+}
+
+body {
+  min-width: 250px;
+  background-color: #447;
+  color: #c0c000;
+  font-size: 0.9em;
+  font-family: Helvetica, Verdana, Geneva, Arial, sans-serif;
+  font-weight: normal;
+  text-shadow: 1px 1px 0px rgba(255,255,255, 0.175);
+  padding: 1em 1em;
+  width: calc(100% - 4em);
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  padding: 0px;
+  margin: 0px;
+}
+
+.headline {
+  margin-top: 2em;
+  width: 100%;
+  clear: both;
+}
+
+h1.headline  {
+  margin-top: 0px;
+  color: #ccc;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #c0c000;
+  margin-bottom: 1.25em;
+}
+
+h2.headline  {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+button,
+input[type="file"] {
+  cursor: pointer;
+  padding: 0.5em 0.25em;
+  margin: 0px;
+}
+
+input,
+textarea {
+  background-color: #224;
+  color: #ccc;
+  margin: 0px;
+}
+
+#uploadArea input,
+#uploadArea textarea {
+  margin: 1.3em 1em;
+  width: calc(100% - 1em);
+}
+
+#uploadArea button,
+#clearUploadButton  {
+  float: right;
+  margin-bottom: 4em;
+}
+
+#apikey,
+#uploadRemoteInput,
+#uploadCurrentFile,
+#uploadProgressPercent,
+#uploadProgressFiles,
+#uploadDetails,
+#uploadLog {
+  clear: both;
+  width: calc(100% - 0.5em);
+  margin: 0.5em 1em;
+  font-style: italic;
+  border: none;
+  border-radius: 8px;
+  padding: 1.3em 1em;
+  resize: none;
+}
+
+#uploadRemoteInput,
+#uploadDetails {
+  height: 150px;
+  width: calc(100% - 1em);
+  font-size: 1em;
+}
+
+#uploadLog {
+  width: calc(100% - 1em);
+  min-height: 150px;
+  font-style: normal;
+  font-size: 1em;
+}
+
+#uploadLog::placeholder {
+  font-style: italic;
+}
+

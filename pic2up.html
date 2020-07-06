@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>pic2up - a picflash uploader</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="pic2up.css"/>
+    <script type="text/javascript" src="libs/l10n/l10n.js" defer></script>
+    <script type="text/javascript" src="pic2up.js" defer></script>
+  </head>
+  <body>
+    <h1 class="headline">pic2up - a picflash uploader</h1>
+    <h3 class="headline">Picflash API-Key</h3>
+    <input type="password" id="apikey" type="text" placeholder="API-Key" />
+    <div id="uploadArea">
+      <div>
+        <h3 class="headline">Local upload</h3>
+        <input id="uploadLocalInput" type="file" accept="image/gif, image/png, image/jpeg, application/pdf, video/webm, video/mp4" multiple="true" placeholder="Upload local images and videos" />
+        <button id="submitLocalUpload">Start local upload</button>
+      </div>
+      <div>
+        <h3 class="headline">Remote upload</h3>
+        <textarea id="uploadRemoteInput" placeholder="Upload images remotely by pasting one remote (http/https) url a line"></textarea>
+        <button id="submitRemoteUpload">Start remote upload</button>
+      </div>
+    </div>
+    <div name="uploadStatus">
+      <h3 class="headline">Upload status</h3>
+      <input id="uploadCurrentFile" placeholder="Currently uploaded file" readonly/>
+      <input id="uploadProgressPercent" placeholder="Current upload progress" readonly/>
+      <input id="uploadProgressFiles" placeholder="Currently uploaded file number of files" readonly/>
+      <textarea id="uploadLog" readonly placeholder="Upload log"></textarea>
+    </div>
+    <div>
+      <h3 class="headline">Upload results</h3>
+      <textarea id="uploadDetails" readonly placeholder="Uploaded picflash information"></textarea>
+    </div>
+    <button type="button" id="clearUploadButton">Clear upload history and details</button>
+  </body>
+</html>
