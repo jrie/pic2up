@@ -1,28 +1,12 @@
 'use strict'
 
 let useChrome = typeof (browser) === 'undefined'
+let useTab = false
 
-function handleMessage(request, sender, sendResponse) {
-  if (useChrome) {
-    if (request['getData'] !== undefined) chrome.storage.local.get(function (data) {
-      sendResponse(data)
-      return true
-    })
-    else chrome.storage.local.set(request['saveData'])
-    return true
-  }
-
-  if (request['getData'] !== undefined) sendResponse(browser.storage.local.get())
-  else browser.storage.local.set(request['saveData'])
-}
-
-if (useChrome) {
-  chrome.windows.create({'type': 'popup', 'url': 'pic2up.html', 'height': 600, 'width': 800 });
-  chrome.runtime.onMessage.addListener(handleMessage)
+if (useTab) {
+    if (useChrome) chrome.tabs.create({'url': 'pic2up.html', 'title': ''});
+    else browser.tabs.create({'url': 'pic2up.html', 'title': ''});
 } else {
-  browser.windows.create({'type': 'popup', 'url': 'pic2up.html', 'titlePreface': '', 'height': 600, 'width': 800 });
-  browser.runtime.onMessage.addListener(handleMessage)
+    if (useChrome) chrome.windows.create({'type': 'popup', 'url': 'pic2up.html', 'height': 600, 'width': 800 });
+    else browser.windows.create({'type': 'popup', 'url': 'pic2up.html', 'titlePreface': '', 'height': 600, 'width': 800 });
 }
-
-
-

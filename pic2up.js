@@ -13,9 +13,8 @@ function setApiKey(evt) {
 
 function readRuntimeData() {
   apiKey.value = ''
-
-  if (useChrome)  {
-    chrome.runtime.sendMessage({'getData': true}, function (data) {
+  if (useChrome) {
+    chrome.storage.local.get(function (data) {
       if (data === undefined) return
       if (data['uploadLog'] !== undefined) uploadLog.value = data['uploadLog']
       if (data['uploadDetails'] !== undefined) uploadDetails.value = data['uploadDetails']
@@ -23,13 +22,17 @@ function readRuntimeData() {
         apiKey.value = data['apikey']
         PICFLASH_API_KEY = data['apikey']
       }
+
+      return true
     })
+
     return
   }
 
-  browser.runtime.sendMessage({'getData': true}).then(function (data) {
+  browser.storage.local.get().then(function (data) {
     if (data['uploadLog'] !== undefined) uploadLog.value = data['uploadLog']
     if (data['uploadDetails'] !== undefined) uploadDetails.value = data['uploadDetails']
+    if (data['uploadStatus'] !== undefined) console.log(data['uploadStatus'])
     if (data['apikey'] !== undefined) {
       apiKey.value = data['apikey']
       PICFLASH_API_KEY = data['apikey']
@@ -54,8 +57,8 @@ function clearUploadData() {
   runData['uploadDetails'] = ''
   runData['uploadStatus'] = ''
 
-  if (useChrome) chrome.runtime.sendMessage({'saveData': runData})
-  else browser.runtime.sendMessage({'saveData': runData})
+  if (useChrome) chrome.storage.local.set(runData)
+  else browser.storage.local.set(runData)
 
   window.alert('Successfully cleared upload history.')
 }
@@ -65,8 +68,9 @@ function updateRuntimeData() {
   runData['uploadLog'] = uploadLog.value
   runData['uploadDetails'] = uploadDetails.value
   runData['uploadStatus'] = uploadStatus
-  if (useChrome) chrome.runtime.sendMessage({'saveData': runData}, function(response) { console.log(response)})
-  else browser.runtime.sendMessage({'saveData': runData})
+
+  if (useChrome) chrome.storage.local.set(runData)
+  else browser.storage.local.set(runData)
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -77,12 +81,17 @@ function uploadItem(url, method, imgItem) {
       uploadLog.value += 'Uploaded succesfully: "' + (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current']) + '"\n'
       uploadDetails.value += (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current']) + ' : ' + JSON.stringify(JSON.parse(evt.target.responseText)) + '\n'
       uploadProgressFiles.value = uploadStatus['cnt'].toString() + ' of ' + uploadStatus['cntTotal'].toString() + ' files'
-      updateRuntimeData()
-      uploadStatus['current'] = null
-      uploadStatus['uploadInProgess'] = false
       document.title = originalTitle
+      uploadStatus['current'] = null
+      uploadStatus['uploadError'].push(null)
+
+      updateRuntimeData()
+      uploadStatus['uploadInProgess'] = false
     } else if (evt.target.readyState === 4 && evt.target.status !== 200) {
       document.title = originalTitle
+      uploadStatus['uploadError'].push(evt.target.responseText)
+
+      updateRuntimeData()
       uploadStatus['uploadInProgess'] = false
     }
   }
@@ -91,7 +100,7 @@ function uploadItem(url, method, imgItem) {
   function handleXMLRequestProgress (evt) {
     document.title = originalTitle + ': In upload'
     for (let x = 0; x < countPos; ++x) document.title += '.'
-    if (++countPos > 7) countPos = 0
+    if (++countPos > 3) countPos = 0
     uploadProgressPercent.value = (evt.loaded / 1000000.0).toFixed(2).toString() + ' of ' + (evt.total / 1000000.0).toFixed(2).toString() + ' MB ( ' + ((evt.loaded / evt.total) * 100).toFixed(2) .toString() + '% )'
   }
 
@@ -135,6 +144,7 @@ function resetStatus() {
   uploadStatus['cntTotal'] = 0
   uploadStatus['current'] = null
   uploadStatus['uploadInProgres'] = false
+  uploadStatus['uploadError'] = []
   uploadStatus['uploadQueue'] = []
 
   uploadCurrentFile.value = ''
@@ -146,6 +156,11 @@ function resetStatus() {
 
 // ---------------------------------------------------------------------------------------------------
 function collectLocalPictures() {
+  if (PICFLASH_API_KEY === '') {
+    window.alert('API key is missing.')
+    return
+  }
+
   if (!window.confirm('Do you want to start the local upload?')) return
   window.alert('Starting local upload.')
 
@@ -156,12 +171,15 @@ function collectLocalPictures() {
   for (let fileEntry of localFiles) uploadStatus['uploadQueue'].push(fileEntry)
   uploadStatus['uploadQueue'] = uploadStatus['uploadQueue'].reverse()
 
-
   window.requestAnimationFrame(processUploadQueue)
 }
 
 // ---------------------------------------------------------------------------------------------------
 function collectRemotePictures() {
+  if (PICFLASH_API_KEY === '') {
+    window.alert('API key is missing.')
+    return
+  }
 
   if (!window.confirm('Do you want to start the remote upload?')) return
   window.alert('Starting remote upload')
@@ -173,7 +191,6 @@ function collectRemotePictures() {
 
   for (let fileEntry of remoteFiles) uploadStatus['uploadQueue'].push(fileEntry)
   uploadStatus['uploadQueue'] = uploadStatus['uploadQueue'].reverse()
-
 
   window.requestAnimationFrame(processUploadQueue)
 }
@@ -214,6 +231,5 @@ document.querySelector('#submitLocalUpload').addEventListener('click', collectLo
 document.querySelector('#submitRemoteUpload').addEventListener('click', collectRemotePictures)
 document.querySelector('#clearUploadButton').addEventListener('click', clearUploadData)
 
-// ---------------------------------------------------------------------------------------------------
 apiKey.addEventListener('keyup', setApiKey)
 readRuntimeData()
