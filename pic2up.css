@@ -40,7 +40,7 @@ button {
   margin-top: 2em;
   margin-bottom: 3em;
   background-color: rgba(34,34,68,0.84);
-  box-shadow: 2px 0px 8px rgba(255,255,0,0.6);
+  /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
 
 }
@@ -49,10 +49,10 @@ input,
 textarea {
   margin: 0px;
   border-radius: 8px;
-  border: 2px solid #c8bc4b;
+  /*border: 2px solid #c8bc4b;*/
   background-color: rgba(34,34,68,0.84);
   padding: 1em 2em;
-  box-shadow: 2px 0px 8px rgba(255,255,0,0.6);
+  /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
 }
 
 .headline {
@@ -67,7 +67,7 @@ textarea {
   cursor: pointer;
   margin: 0px;
   background-color: rgba(34,34,68,0.84);
-  box-shadow: 2px 0px 8px rgba(255,255,0,0.6);
+  /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
   width: calc(100% - 5em);
   margin-left: 1em;
@@ -104,7 +104,7 @@ textarea {
   border-radius: 8px;
   padding: 1.3em 1em;
   resize: none;
-  border: 2px solid #c8bc4b;
+  /*border: 2px solid #c8bc4b;*/
   background-color: rgba(34,34,68,0.91);
   color: #ffc;
   text-shadow: 2px 0px 1px rgba(255,255,255, 0.4);
