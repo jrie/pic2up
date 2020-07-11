@@ -5,6 +5,7 @@ body {
 }
 
 body {
+  background: url('img/bg.png') repeat scroll left top;
   min-width: 250px;
   background-color: #447;
   color: #c0c000;
@@ -21,49 +22,71 @@ p, h1, h2, h3, h4, h5, h6 {
   margin: 0px;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: 2px 0px 1px rgba(0,0,0, 0.4);
+}
+
 .headline {
-  margin-top: 2em;
   width: 100%;
   clear: both;
+  margin-top: 2em;
 }
 
-h1.headline  {
-  margin-top: 0px;
-  color: #ccc;
-  padding-bottom: 0.5em;
-  border-bottom: 1px solid #c0c000;
-  margin-bottom: 1.25em;
-}
-
-h2.headline  {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-button,
-input[type="file"] {
+button {
+  color: #ff8;
   cursor: pointer;
-  padding: 0.5em 0.25em;
+  padding: 1em 2em;
   margin: 0px;
+  margin-top: 2em;
+  margin-bottom: 3em;
+  background-color: rgba(34,34,68,0.84);
+  box-shadow: 2px 0px 8px rgba(255,255,0,0.6);
+  border-radius: 8px;
+
 }
 
 input,
 textarea {
-  background-color: #224;
-  color: #ccc;
   margin: 0px;
+  border-radius: 8px;
+  border: 2px solid #c8bc4b;
+  background-color: rgba(34,34,68,0.84);
+  padding: 1em 2em;
+  box-shadow: 2px 0px 8px rgba(255,255,0,0.6);
 }
 
-#uploadArea input,
-#uploadArea textarea {
-  margin: 1.3em 1em;
-  width: calc(100% - 1em);
+.headline {
+  margin-bottom: 0.5em;
+  padding: 0em 1em;
+  width: calc(100% - 2em);
 }
+
+
+#uploadArea input {
+  color: #ff8;
+  cursor: pointer;
+  margin: 0px;
+  background-color: rgba(34,34,68,0.84);
+  box-shadow: 2px 0px 8px rgba(255,255,0,0.6);
+  border-radius: 8px;
+  width: calc(100% - 5em);
+  margin-left: 1em;
+}
+
+#uploadArea textarea {
+  margin: 0em 1em;
+  width: calc(100% - 3em);
+}
+
+
 
 #uploadArea button,
 #clearUploadButton  {
   float: right;
-  margin-bottom: 4em;
+}
+
+#clearUploadButton {
+  margin-bottom: 8em;
 }
 
 #apikey,
@@ -74,30 +97,40 @@ textarea {
 #uploadDetails,
 #uploadLog {
   clear: both;
-  width: calc(100% - 0.5em);
+  width: calc(100% - 3em);
   margin: 0.5em 1em;
   font-style: italic;
   border: none;
   border-radius: 8px;
   padding: 1.3em 1em;
   resize: none;
+  border: 2px solid #c8bc4b;
+  background-color: rgba(34,34,68,0.91);
+  color: #ffc;
+  text-shadow: 2px 0px 1px rgba(255,255,255, 0.4);
+}
+
+
+#apikey {
+  margin-bottom: 4em;
+
 }
 
 #uploadRemoteInput,
-#uploadDetails {
+#uploadDetails,
+#uploadLog {
   height: 150px;
-  width: calc(100% - 1em);
+  width: calc(100% - 3em);
   font-size: 1em;
 }
 
 #uploadLog {
-  width: calc(100% - 1em);
   min-height: 150px;
   font-style: normal;
   font-size: 1em;
 }
 
-#uploadLog::placeholder {
+*::placeholder {
   font-style: italic;
 }
 
