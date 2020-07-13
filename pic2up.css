@@ -14,9 +14,10 @@ body {
   font-size: 0.9em;
   font-family: Helvetica, Verdana, Geneva, Arial, sans-serif;
   font-weight: normal;
-  text-shadow: 1px 1px 0px rgba(255,255,255, 0.175);
+  text-shadow: 1px 1px 0px rgba(255,255,255, 0.275);
   width: calc(100% - 4em);
   position: relative;
+  background: url('img/bg_back.png') repeat scroll center center #000;
 }
 
 p, h1, h2, h3, h4, h5, h6, span {
@@ -24,8 +25,8 @@ p, h1, h2, h3, h4, h5, h6, span {
   margin: 0px;
 }
 
-h1, h2, h3, h4, h5, h6, span, textarea {
-  text-shadow: 2px 0px 1px rgba(0,0,0, 0.4);
+h1, h2, h3, h4, h5, h6, span, textarea, input {
+  text-shadow: 2px 0px 1px rgba(0,0,0, 0.3);
 }
 
 .clearfix {
@@ -33,7 +34,7 @@ h1, h2, h3, h4, h5, h6, span, textarea {
 }
 
 .background {
-  background: url('img/bg.png') repeat scroll center center transparent;
+  background: url('img/bg.png') repeat scroll center center #333;
   box-shadow: 0px 0px 19px 19px rgba(0,0,0, 0.2);
   border: 2px solid #88a;
   border-radius: 8px;
@@ -58,7 +59,7 @@ button {
   margin: 0px;
   margin-top: 2em;
   margin-bottom: 3em;
-  background-color: rgba(34,34,68,0.84);
+  background-color: rgba(0,0,0,0.5);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
 }
@@ -67,10 +68,15 @@ input,
 textarea {
   margin: 0px;
   border-radius: 8px;
-  /*border: 2px solid #c8bc4b;*/
-  background-color: rgba(34,34,68,0.84);
   padding: 1em 2em;
+  border: 2px solid #666;
+  background-color: rgba(0,0,0,0.135);
+  color: #ffff00;
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
+}
+
+textarea {
+  background-color: rgba(0,0,0,0.55);
 }
 
 .headline {
@@ -84,7 +90,8 @@ textarea {
   color: #ff8;
   cursor: pointer;
   margin: 0px;
-  background-color: rgba(34,34,68,0.84);
+  border: 2px solid #666;
+  background-color: rgba(0,0,0,0.3);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
   width: calc(100% - 5em);
@@ -93,7 +100,9 @@ textarea {
 
 #uploadArea textarea {
   margin: 0em 1em;
-  width: calc(100% - 3em);
+  width: calc(100% - 3.3em);
+  border: 2px solid #666;
+  background-color: rgba(0,0,0,0.5);
 }
 
 #uploadArea button,
@@ -106,7 +115,8 @@ textarea {
 #uploadListRemote {
   clear: both;
   list-style: none;
-  background-color: rgba(34,34,68,0.84);
+  border: 2px solid #666;
+  background-color: rgba(0,0,0,0.3);
   padding: 0px;
   margin: 0px;
   margin-left: 1em;
@@ -116,15 +126,23 @@ textarea {
 
 #uploadListLocal li,
 #uploadListRemote li {
-  border-radius: 8px;
-  width: calc(100% - 2em);
+  border-radius: 0px;
+  width: calc(100% - 2.2em);
   display: flex;
   padding: 1em;
+  border: 2px solid #444;
+  background-color: rgba(0,0,0,0.1);
+}
+
+#uploadListLocal li:last-of-type,
+#uploadListRemote li:last-of-type {
+  border-radius: 0px 0px 8px 8px;
 }
 
 #uploadListLocal li:first-of-type,
 #uploadListRemote li:first-of-type {
-  background-color: #337;
+  border: 2px solid #666;
+  background-color: rgba(0,0,0,0.3);
   border-radius: 8px 8px 0px 0px;
 }
 
@@ -159,16 +177,16 @@ textarea {
   border-radius: 8px;
   padding: 1.3em 1em;
   resize: none;
-  /*border: 2px solid #c8bc4b;*/
-  background-color: rgba(34,34,68,0.91);
-  color: #ffc;
+  border: 2px solid #666;
+  background-color: rgba(0,0,0,0.5);
+  color: #ffff00;
   text-shadow: 2px 0px 1px rgba(255,255,255, 0.4);
 }
 
 
 #apikey {
   margin-bottom: 4em;
-
+  background-color: rgba(0,0,0,0.45);
 }
 
 #uploadRemoteInput,
@@ -187,5 +205,7 @@ textarea {
 
 *::placeholder {
   font-style: italic;
+  font-weight: bold;
+  color: #ffff00
 }
 
