@@ -32,7 +32,6 @@ function readRuntimeData() {
   browser.storage.local.get().then(function (data) {
     if (data['uploadLog'] !== undefined) uploadLog.value = data['uploadLog']
     if (data['uploadDetails'] !== undefined) uploadDetails.value = data['uploadDetails']
-    if (data['uploadStatus'] !== undefined) console.log(data['uploadStatus'])
     if (data['apikey'] !== undefined) {
       apiKey.value = data['apikey']
       PICFLASH_API_KEY = data['apikey']
@@ -110,7 +109,7 @@ function uploadItem(url, method, imgItem) {
 
   formData.append('useragent', PICFLASH_USER_AGENT)
   formData.append('apikey', PICFLASH_API_KEY)
-  formData.append('formatliste', 'og')
+  formData.append('formatliste', imgItem['imgFormat'])
   formData.append('userdrehung', imgItem['imgRotation'])
   if (imgItem['noexif'] !== undefined) formData.append('noexif', true)
 
@@ -130,12 +129,10 @@ function processUploadQueue() {
       uploadProgressFiles.value = uploadStatus['cnt'].toString() + ' of ' + uploadStatus['cntTotal'].toString() + ' files'
       uploadCurrentFile.value = 'File in upload: ' + (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current'])
 
-      if (uploadStatus['current'].name !== undefined) uploadPicture(uploadStatus['current'], false)
-      else uploadPicture(uploadStatus['current'], true)
+      if (uploadStatus['current'].name !== undefined) uploadPicture(uploadStatus['current'], false, uploadStatus['uploadIndex'].pop())
+      else uploadPicture(uploadStatus['current'], true, -1)
     }
-  }
-
-  window.requestAnimationFrame(processUploadQueue)
+  } else window.requestAnimationFrame(processUploadQueue)
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -146,6 +143,7 @@ function resetStatus() {
   uploadStatus['uploadInProgres'] = false
   uploadStatus['uploadError'] = []
   uploadStatus['uploadQueue'] = []
+  uploadStatus['uploadIndex'] = []
 
   uploadCurrentFile.value = ''
   uploadProgressPercent.value = ''
@@ -162,14 +160,24 @@ function collectLocalPictures() {
   }
 
   if (!window.confirm('Do you want to start the local upload?')) return
-  window.alert('Starting local upload.')
 
   let localFiles = document.querySelector('#uploadLocalInput').files
   resetStatus()
   uploadStatus['cntTotal'] = localFiles.length
+  uploadStatus['uploadQueue'] = []
+  uploadStatus['uploadIndex'] = []
 
-  for (let fileEntry of localFiles) uploadStatus['uploadQueue'].push(fileEntry)
+  let uploadIndex = 1
+  for (let fileEntry of localFiles) {
+    uploadStatus['uploadQueue'].push(fileEntry)
+    uploadStatus['uploadIndex'].push(uploadIndex)
+    ++uploadIndex
+  }
+
+  if (uploadIndex !== 1) window.alert('Starting local upload.')
+  else return
   uploadStatus['uploadQueue'] = uploadStatus['uploadQueue'].reverse()
+  uploadStatus['uploadIndex'] = uploadStatus['uploadIndex'].reverse()
 
   window.requestAnimationFrame(processUploadQueue)
 }
@@ -182,10 +190,14 @@ function collectRemotePictures() {
   }
 
   if (!window.confirm('Do you want to start the remote upload?')) return
-  window.alert('Starting remote upload')
 
-  let remoteFiles = document.querySelector('#uploadRemoteInput').value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|web|mp4))/gi)
-  if (remoteFiles === null) return
+  let remoteFiles = document.querySelector('#uploadRemoteInput').value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
+  if (remoteFiles === null) {
+    window.alert('No remote files found in Remote upload area')
+    return
+  }
+
+  window.alert('Starting remote upload')
   resetStatus()
   uploadStatus['cntTotal'] = remoteFiles.length
 
@@ -196,13 +208,30 @@ function collectRemotePictures() {
 }
 
 // ---------------------------------------------------------------------------------------------------
-function uploadPicture(fileEntry, isRemote) {
-  let imgItem = {
+function uploadPicture(fileEntry, isRemote, localFileIndex) {
+  let imgItem = {}
+  if (isRemote) {
+    imgItem = {
+      'file': fileEntry,
+      'isRemote': true,
+      'imgRotation': PICFLASH_ROTATIONS[uploadListRemote.children[localFileIndex].querySelector('.fileRotation').value],
+      'imgFormat': PICFLASH_FORMATS[uploadListRemote.children[localFileIndex].querySelector('.fileFormat').value],
+      'noexif': uploadListRemote.children[localFileIndex].querySelector('.noExif').checked
+    }
+  }
+  imgItem = {
     'file': fileEntry,
     'isRemote': isRemote,
-    'imgRotation': '00',
-    'noexif': true
+    'imgRotation': PICFLASH_ROTATIONS[uploadListLocal.children[localFileIndex].querySelector('.fileRotation').value],
+    'imgFormat': PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
+    'noexif': uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
   }
+
+  console.log(imgItem)
+
+  uploadStatus['current'] = null
+  uploadStatus['uploadInProgess'] = false
+  return
 
   let fileNameLower = fileEntry['name'] !== undefined ? fileEntry['name'].toLowerCase() : fileEntry.toLowerCase()
   if (fileNameLower.endsWith('.webm') || fileNameLower.endsWith('.mp4')) delete imgItem['noexif']
@@ -211,9 +240,166 @@ function uploadPicture(fileEntry, isRemote) {
 }
 
 // ---------------------------------------------------------------------------------------------------
+function createUploadDetails(file, uploadList) {
+  let span = null
+  let input = null
+  let select = null
+  let option = null
+  let optionValue = '-1'
+
+  let li = document.createElement('li')
+
+  // --------------------------------------------------------------------------
+  span = document.createElement('span')
+  span.className = 'fileName'
+  span.appendChild(document.createTextNode(file.name))
+  li.appendChild(span)
+
+  // --------------------------------------------------------------------------
+  span = document.createElement('span')
+  span.className = 'fileSize'
+  span.appendChild(document.createTextNode((file.size / 1000000.0).toFixed(2).toString() + ' MB'))
+  li.appendChild(span)
+
+  // --------------------------------------------------------------------------
+  span = document.createElement('span')
+  input = document.createElement('input')
+  input.className = 'noExif'
+  input.type = 'checkbox'
+  span.appendChild(input)
+  li.appendChild(span)
+
+  // --------------------------------------------------------------------------
+  span = document.createElement('span')
+  select = document.createElement('select')
+  select.className = 'fileFormat'
+  option = document.createElement('option')
+  option.appendChild(document.createTextNode('Original size'))
+  option.value = '-1'
+  option.selected = 'selected'
+  select.appendChild(option)
+
+  optionValue = '-1'
+  for (let format of Object.keys(PICFLASH_FORMATS)) {
+    optionValue = (parseInt(optionValue) + 1).toString()
+    format = PICFLASH_FORMATS[optionValue]
+
+    if (format === undefined) break
+    option = document.createElement('option')
+
+    option.appendChild(document.createTextNode(format))
+    option.value = optionValue
+    select.appendChild(option)
+  }
+  span.appendChild(select)
+  li.appendChild(span)
+
+  // --------------------------------------------------------------------------
+  span = document.createElement('span')
+  select = document.createElement('select')
+  select.className = 'fileRotation'
+  option = document.createElement('option')
+  option.appendChild(document.createTextNode('No rotation'))
+  option.value = '-1'
+  option.selected = 'selected'
+  select.appendChild(option)
+
+  optionValue = '-1'
+  for (let format of Object.keys(PICFLASH_ROTATIONS)) {
+    optionValue = (parseInt(optionValue) + 1).toString()
+    format = PICFLASH_ROTATIONS[optionValue]
+
+    if (format === undefined) break
+    option = document.createElement('option')
+
+    option.appendChild(document.createTextNode(format))
+    option.value = optionValue
+    select.appendChild(option)
+  }
+  span.appendChild(select)
+  li.appendChild(span)
+
+  // --------------------------------------------------------------------------
+  uploadList.appendChild(li)
+}
+
+// ---------------------------------------------------------------------------------------------------
+function clearUploadOptions(uploadList) {
+  let size = uploadList.children.length
+  for (let index = 1; index < size; ++index) uploadList.removeChild(uploadList.children[1])
+}
+
+// ---------------------------------------------------------------------------------------------------
+function readLocalPictures(evt) {
+  clearUploadOptions(uploadListLocal)
+  for (let file of evt.target.files) createUploadDetails(file, uploadListLocal)
+
+  if (uploadListLocal.children.length > 0) {
+    let noData = uploadListLocal.querySelector('.noData')
+    if (noData !== null) {
+      uploadListLocal.removeChild(noData)
+    } else if (uploadListLocal.children.length <= 1) {
+      let li = document.createElement('li')
+      li.appendChild(document.createTextNode('No upload data'))
+      li.className = 'noData'
+      uploadListLocal.appendChild(li)
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+function readRemotePictures(evt) {
+  let remoteUploadData = evt.target.value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
+
+  clearUploadOptions(uploadListRemote)
+
+  if (remoteUploadData !== null) {
+    for (let link of remoteUploadData) {
+      let linkName = link.split('/')
+      let file = {'name': linkName[linkName.length - 1], 'size': 0}
+      createUploadDetails(file, uploadListRemote)
+    }
+  }
+
+  if (uploadListRemote.children.length > 0) {
+    let noData = uploadListRemote.querySelector('.noData')
+    if (noData !== null) {
+      uploadListRemote.removeChild(noData)
+    } else if (uploadListRemote.children.length <= 1) {
+      let li = document.createElement('li')
+      li.appendChild(document.createTextNode('No upload data'))
+      li.className = 'noData'
+      uploadListRemote.appendChild(li)
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
 let PICFLASH_API_KEY = ''
 let PICFLASH_API_URL = 'https://www.picflash.org/tool.php'
 let PICFLASH_USER_AGENT = 'pic2up'
+let PICFLASH_FORMATS = {
+  '-1': 'og',
+  '0': '80x80',
+  '1': '100x75',
+  '2': '100x100',
+  '3': '150x112',
+  '4': '468x60',
+  '5': '400x400',
+  '6': '320x240',
+  '7': '640x480',
+  '8': '800x600',
+  '9': '1024x768',
+  '10': '1280x1024',
+  '11': '1600x1200'
+}
+let PICFLASH_ROTATIONS = {
+  '-1': '00',
+  '0': '90',
+  '1': '180',
+  '2': '270'
+}
+
 // ---------------------------------------------------------------------------------------------------
 let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgres': false, 'uploadQueue': [], 'current': null}
 let runData = { 'apikey': PICFLASH_API_KEY }
@@ -225,11 +411,19 @@ let uploadProgressFiles = document.querySelector('#uploadProgressFiles')
 let uploadLog = document.querySelector('#uploadLog')
 let uploadDetails = document.querySelector('#uploadDetails')
 let apiKey = document.querySelector('#apikey')
+let uploadListLocal = document.querySelector('#uploadListLocal')
+let uploadListRemote = document.querySelector('#uploadListRemote')
+
 
 // ---------------------------------------------------------------------------------------------------
+document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
+document.querySelector('#uploadRemoteInput').addEventListener('keyup', readRemotePictures)
 document.querySelector('#submitLocalUpload').addEventListener('click', collectLocalPictures)
 document.querySelector('#submitRemoteUpload').addEventListener('click', collectRemotePictures)
 document.querySelector('#clearUploadButton').addEventListener('click', clearUploadData)
-
 apiKey.addEventListener('keyup', setApiKey)
+
+// ---------------------------------------------------------------------------------------------------
 readRuntimeData()
+document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
+document.querySelector('#uploadRemoteInput').dispatchEvent(new Event('keyup'))
