@@ -187,7 +187,10 @@ function collectLocalPictures() {
   }
 
   if (uploadIndex !== 1) window.alert('Starting local upload.')
-  else return
+  else {
+    window.alert('No upload files selected.')
+    return
+  }
   uploadStatus['uploadQueue'] = uploadStatus['uploadQueue'].reverse()
   uploadStatus['uploadIndex'] = uploadStatus['uploadIndex'].reverse()
 
@@ -205,7 +208,7 @@ function collectRemotePictures() {
 
   let remoteFiles = document.querySelector('#uploadRemoteInput').value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
   if (remoteFiles === null) {
-    window.alert('No remote files found in remote upload area')
+    window.alert('No remote files found in remote upload list.')
     return
   }
 
@@ -230,13 +233,14 @@ function uploadPicture(fileEntry, isRemote, localFileIndex) {
       'imgFormat': PICFLASH_FORMATS[uploadListRemote.children[localFileIndex].querySelector('.fileFormat').value],
       'noexif': uploadListRemote.children[localFileIndex].querySelector('.noExif').checked
     }
-  }
-  imgItem = {
-    'file': fileEntry,
-    'isRemote': isRemote,
-    'imgRotation': PICFLASH_ROTATIONS[uploadListLocal.children[localFileIndex].querySelector('.fileRotation').value],
-    'imgFormat': PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
-    'noexif': uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
+  } else {
+    imgItem = {
+      'file': fileEntry,
+      'isRemote': isRemote,
+      'imgRotation': PICFLASH_ROTATIONS[uploadListLocal.children[localFileIndex].querySelector('.fileRotation').value],
+      'imgFormat': PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
+      'noexif': uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
+    }
   }
 
   let fileNameLower = fileEntry['name'] !== undefined ? fileEntry['name'].toLowerCase() : fileEntry.toLowerCase()
