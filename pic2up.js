@@ -4,6 +4,7 @@
 let useChrome = typeof (browser) === 'undefined'
 let hasConsole = typeof (console) !== 'undefined'
 
+if (useChrome) document.body.classList.add('opera')
 // ----------------------------------------------------------------------------
 function setApiKey(evt) {
   runData['apikey'] = evt.target.value.trim()
