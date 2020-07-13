@@ -1,3 +1,4 @@
+@import("fonts/Montserrat/fonts/Montserrat.css");
 html,
 body {
   padding: 0px;
@@ -12,8 +13,8 @@ body {
   background-color: #121237;
   color: #c0c000;
   font-size: 0.9em;
-  font-family: Helvetica, Verdana, Geneva, Arial, sans-serif;
-  font-weight: normal;
+  font-family: 'Montserrat', sans;
+  font-weight: 400;
   text-shadow: 1px 1px 0px rgba(255,255,255, 0.275);
   width: calc(100% - 4em);
   position: relative;
@@ -26,7 +27,7 @@ p, h1, h2, h3, h4, h5, h6, span {
 }
 
 h1, h2, h3, h4, h5, h6, span, textarea, input {
-  text-shadow: 2px 0px 1px rgba(0,0,0, 0.3);
+  text-shadow: 2px 0px 1px rgba(0,0,0, 0.5);
 }
 
 .clearfix {
@@ -34,8 +35,8 @@ h1, h2, h3, h4, h5, h6, span, textarea, input {
 }
 
 .background {
-  background: url('img/bg.png') repeat scroll center center #333;
-  box-shadow: 0px 0px 19px 19px rgba(0,0,0, 0.2);
+  background: url('img/bg.png') repeat -15px -15px #333;
+  box-shadow: 0px 0px 14px 14px rgba(0,0,0, 0.23);
   border: 2px solid #88a;
   border-radius: 8px;
   position: absolute;
@@ -62,6 +63,8 @@ button {
   background-color: rgba(0,0,0,0.5);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 input,
@@ -70,8 +73,9 @@ textarea {
   border-radius: 8px;
   padding: 1em 2em;
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.135);
+  background-color: rgba(0,0,0,0.115);
   color: #ffff00;
+  text-shadow: 1px 1px 0px rgba(0,0,0, 0.475);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
 }
 
@@ -132,6 +136,7 @@ textarea {
   padding: 1em;
   border: 2px solid #444;
   background-color: rgba(0,0,0,0.1);
+  text-shadow: 1px 1px 0px rgba(0,0,0, 0.475);
 }
 
 #uploadListLocal li:last-of-type,
@@ -205,7 +210,7 @@ textarea {
 
 *::placeholder {
   font-style: italic;
-  font-weight: bold;
-  color: #ffff00
+  color: #ffff00;
+  text-shadow: 1px 1px 0px rgba(0,0,0, 0.475);
 }
 

@@ -1,0 +1,67 @@
+/** =================== MONTSERRAT =================== **/
+
+/** Montserrat Light **/
+@font-face {
+    font-family: "Montserrat";
+    font-weight: 300;
+    font-style: normal;
+    src: url("Montserrat-Light.eot");
+    src: url("Montserrat-Light.eot?#iefix") format('embedded-opentype'),
+         url("Montserrat-Light.woff2") format("woff2"),
+         url("Montserrat-Light.woff") format("woff");
+}
+
+/** Montserrat Light-Italic **/
+@font-face {
+    font-family: "Montserrat";
+    font-weight: 300;
+    font-style: italic;
+    src: url("Montserrat-LightItalic.eot");
+    src: url("Montserrat-LightItalic.eot?#iefix") format('embedded-opentype'),
+         url("Montserrat-LightItalic.woff2") format("woff2"),
+         url("Montserrat-LightItalic.woff") format("woff");
+}
+
+/** Montserrat Regular **/
+@font-face {
+    font-family: "Montserrat";
+    font-weight: 400;
+    font-style: normal;
+    src: url("Montserrat-Regular.eot");
+    src: url("Montserrat-Regular.eot?#iefix") format('embedded-opentype'),
+         url("Montserrat-Regular.woff2") format("woff2"),
+         url("Montserrat-Regular.woff") format("woff");
+}
+
+/** Montserrat Regular-Italic **/
+@font-face {
+    font-family: "Montserrat";
+    font-weight: 400;
+    font-style: italic;
+    src: url("Montserrat-Italic.eot");
+    src: url("Montserrat-Italic.eot?#iefix") format('embedded-opentype'),
+         url("Montserrat-Italic.woff2") format("woff2"),
+         url("Montserrat-Italic.woff") format("woff");
+}
+
+/** Montserrat Bold **/
+@font-face {
+    font-family: "Montserrat";
+    font-weight: 700;
+    font-style: normal;
+    src: url("Montserrat-Bold.eot");
+    src: url("Montserrat-Bold.eot?#iefix") format('embedded-opentype'),
+         url("Montserrat-Bold.woff2") format("woff2"),
+         url("Montserrat-Bold.woff") format("woff");
+}
+
+/** Montserrat Bold-Italic **/
+@font-face {
+    font-family: "Montserrat";
+    font-weight: 700;
+    font-style: italic;
+    src: url("Montserrat-BoldItalic.eot");
+    src: url("Montserrat-BoldItalic.eot?#iefix") format('embedded-opentype'),
+         url("Montserrat-BoldItalic.woff2") format("woff2"),
+         url("Montserrat-BoldItalic.woff") format("woff");
+}
