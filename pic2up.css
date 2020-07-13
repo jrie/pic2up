@@ -129,9 +129,13 @@ select {
 }
 
 #uploadArea button,
-#clearUploadButton  {
+#clearUploadButton,
+#checkRemoteUploadsButton  {
   float: right;
-  clear: both;
+}
+
+#checkRemoteUploadsButton {
+  margin-right: 3em;
 }
 
 #uploadListLocal,

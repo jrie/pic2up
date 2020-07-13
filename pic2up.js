@@ -59,6 +59,7 @@ function clearUploadData() {
 
   uploadLocalInput.value = ''
   uploadListRemote.value = ''
+  uploadRemoteInput.value = ''
   document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
   document.querySelector('#uploadRemoteInput').dispatchEvent(new Event('keyup'))
 
@@ -71,7 +72,7 @@ function clearUploadData() {
 // ---------------------------------------------------------------------------------------------------
 function updateRuntimeData() {
   runData['uploadLog'] = uploadLog.value
-  runData['uploadDetails'] = uploadDetai
+  runData['uploadDetails'] = uploadDetails
   runData['uploadStatus'] = uploadStatus
 
   if (useChrome) chrome.storage.local.set(runData)
@@ -87,17 +88,15 @@ function uploadItem(url, method, imgItem) {
       uploadDetails.value += (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current']) + ' : ' + JSON.stringify(JSON.parse(evt.target.responseText)) + '\n'
       uploadProgressFiles.value = uploadStatus['cnt'].toString() + ' of ' + uploadStatus['cntTotal'].toString() + ' files'
       document.title = originalTitle
-      uploadStatus['current'] = null
       uploadStatus['uploadError'].push(null)
-
       updateRuntimeData()
-      uploadStatus['uploadInProgess'] = false
+      uploadStatus['uploadInProgress'] = false
     } else if (evt.target.readyState === 4 && evt.target.status !== 200) {
       document.title = originalTitle
       uploadStatus['uploadError'].push(evt.target.responseText)
 
       updateRuntimeData()
-      uploadStatus['uploadInProgess'] = false
+      uploadStatus['uploadInProgress'] = false
     }
   }
 
@@ -128,17 +127,18 @@ function uploadItem(url, method, imgItem) {
 
 // ---------------------------------------------------------------------------------------------------
 function processUploadQueue() {
-  if (!uploadStatus['uploadInProgess']) {
-    uploadStatus['uploadInProgess'] = true
+  if (!uploadStatus['uploadInProgress']) {
+    uploadStatus['uploadInProgress'] = true
     uploadStatus['current'] = uploadStatus['uploadQueue'].pop()
     if (uploadStatus['current'] !== undefined) {
+      uploadStatus['uploadInProgress'] = true
       uploadProgressFiles.value = uploadStatus['cnt'].toString() + ' of ' + uploadStatus['cntTotal'].toString() + ' files'
       uploadCurrentFile.value = 'File in upload: ' + (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current'])
 
       if (uploadStatus['current'].name !== undefined) uploadPicture(uploadStatus['current'], false, uploadStatus['uploadIndex'].pop())
-      else uploadPicture(uploadStatus['current'], true, -1)
-      window.requestAnimationFrame(processUploadQueue)
+      else uploadPicture(uploadStatus['current'], true, uploadStatus['uploadIndex'].pop())
     }
+    window.requestAnimationFrame(processUploadQueue)
   } else window.requestAnimationFrame(processUploadQueue)
 }
 
@@ -147,7 +147,7 @@ function resetStatus() {
   uploadStatus['cnt'] = 0
   uploadStatus['cntTotal'] = 0
   uploadStatus['current'] = null
-  uploadStatus['uploadInProgres'] = false
+  uploadStatus['uploadInProgress'] = false
   uploadStatus['uploadError'] = []
   uploadStatus['uploadQueue'] = []
   uploadStatus['uploadIndex'] = []
@@ -174,10 +174,12 @@ function collectLocalPictures() {
   if (!window.confirm('Do you want to start the local upload?')) return
 
   let localFiles = document.querySelector('#uploadLocalInput').files
-  resetStatus()
+  uploadStatus['cnt'] = 0
   uploadStatus['cntTotal'] = localFiles.length
   uploadStatus['uploadQueue'] = []
   uploadStatus['uploadIndex'] = []
+  uploadStatus['uploadInProgress'] = false
+  uploadStatus['current'] = undefined
 
   let uploadIndex = 1
   for (let fileEntry of localFiles) {
@@ -188,7 +190,7 @@ function collectLocalPictures() {
 
   if (uploadIndex !== 1) window.alert('Starting local upload.')
   else {
-    window.alert('No upload files selected.')
+    window.alert('No files for upload selected.')
     return
   }
   uploadStatus['uploadQueue'] = uploadStatus['uploadQueue'].reverse()
@@ -212,12 +214,23 @@ function collectRemotePictures() {
     return
   }
 
-  window.alert('Starting remote upload')
-  resetStatus()
+  window.alert('Starting remote file upload.')
+  uploadStatus['cnt'] = 0
   uploadStatus['cntTotal'] = remoteFiles.length
+  uploadStatus['uploadQueue'] = []
+  uploadStatus['uploadIndex'] = []
+  uploadStatus['uploadInProgress'] = false
+  uploadStatus['current'] = undefined
 
-  for (let fileEntry of remoteFiles) uploadStatus['uploadQueue'].push(fileEntry)
+  let uploadIndex = 1
+  for (let fileEntry of remoteFiles) {
+    uploadStatus['uploadQueue'].push(fileEntry)
+    uploadStatus['uploadIndex'].push(uploadIndex)
+    ++uploadIndex
+  }
+
   uploadStatus['uploadQueue'] = uploadStatus['uploadQueue'].reverse()
+  uploadStatus['uploadIndex'] = uploadStatus['uploadIndex'].reverse()
 
   window.requestAnimationFrame(processUploadQueue)
 }
@@ -225,6 +238,7 @@ function collectRemotePictures() {
 // ---------------------------------------------------------------------------------------------------
 function uploadPicture(fileEntry, isRemote, localFileIndex) {
   let imgItem = {}
+
   if (isRemote) {
     imgItem = {
       'file': fileEntry,
@@ -236,7 +250,7 @@ function uploadPicture(fileEntry, isRemote, localFileIndex) {
   } else {
     imgItem = {
       'file': fileEntry,
-      'isRemote': isRemote,
+      'isRemote': false,
       'imgRotation': PICFLASH_ROTATIONS[uploadListLocal.children[localFileIndex].querySelector('.fileRotation').value],
       'imgFormat': PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
       'noexif': uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
@@ -358,6 +372,34 @@ function readLocalPictures(evt) {
 }
 
 // ---------------------------------------------------------------------------------------------------
+function checkRemoteUploads(evt) {
+  function handleXMLRequestStatus (evt) {
+
+    if (evt.target.readyState === 4 && evt.target.status === 200) {
+      let size = evt.target.getResponseHeader('content-length')
+      if (size === null) size = '0.00 MB'
+      else size = (size / 1000000.0).toFixed(2).toString() + ' MB'
+      uploadListRemote.children[evt.target['listIndex']].children[1].textContent = size
+    } else if (evt.target.status != 0) {
+      let size = '0.00 MB'
+      uploadListRemote.children[evt.target['listIndex']].children[1].textContent = size
+    }
+  }
+
+  let remoteUploadData = uploadRemoteInput.value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
+  if (remoteUploadData === null) return
+
+  let index = 1
+  for (let link of remoteUploadData) {
+    let request = new XMLHttpRequest
+    request.addEventListener('readystatechange', handleXMLRequestStatus)
+    request['listIndex'] = index
+    request.open('HEAD', link)
+    request.send()
+    ++index
+  }
+}
+
 function readRemotePictures(evt) {
   let remoteUploadData = evt.target.value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
 
@@ -411,7 +453,7 @@ let PICFLASH_ROTATIONS = {
 }
 
 // ---------------------------------------------------------------------------------------------------
-let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgres': false, 'uploadQueue': [], 'current': null}
+let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgress': false, 'uploadQueue': [], 'uploadError': [], 'current': null}
 let runData = { 'apikey': PICFLASH_API_KEY }
 let originalTitle = document.title
 
@@ -423,17 +465,21 @@ let uploadDetails = document.querySelector('#uploadDetails')
 let apiKey = document.querySelector('#apikey')
 let uploadListLocal = document.querySelector('#uploadListLocal')
 let uploadListRemote = document.querySelector('#uploadListRemote')
+let uploadRemoteInput = document.querySelector('#uploadRemoteInput')
 
 
 // ---------------------------------------------------------------------------------------------------
-document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
-document.querySelector('#uploadRemoteInput').addEventListener('keyup', readRemotePictures)
-document.querySelector('#submitLocalUpload').addEventListener('click', collectLocalPictures)
-document.querySelector('#submitRemoteUpload').addEventListener('click', collectRemotePictures)
-document.querySelector('#clearUploadButton').addEventListener('click', clearUploadData)
 apiKey.addEventListener('keyup', setApiKey)
+uploadRemoteInput.addEventListener('keyup', readRemotePictures)
+
+document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
+document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
+document.querySelector('#submitRemoteUploadButton').addEventListener('click', collectRemotePictures)
+document.querySelector('#checkRemoteUploadsButton').addEventListener('click', checkRemoteUploads)
+document.querySelector('#clearUploadButton').addEventListener('click', clearUploadData)
 
 // ---------------------------------------------------------------------------------------------------
+resetStatus()
 readRuntimeData()
 document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
-document.querySelector('#uploadRemoteInput').dispatchEvent(new Event('keyup'))
+uploadRemoteInput.dispatchEvent(new Event('keyup'))
