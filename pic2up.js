@@ -57,6 +57,11 @@ function clearUploadData() {
   runData['uploadDetails'] = ''
   runData['uploadStatus'] = ''
 
+  uploadLocalInput.value = ''
+  uploadListRemote.value = ''
+  document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
+  document.querySelector('#uploadRemoteInput').dispatchEvent(new Event('keyup'))
+
   if (useChrome) chrome.storage.local.set(runData)
   else browser.storage.local.set(runData)
 
@@ -66,7 +71,7 @@ function clearUploadData() {
 // ---------------------------------------------------------------------------------------------------
 function updateRuntimeData() {
   runData['uploadLog'] = uploadLog.value
-  runData['uploadDetails'] = uploadDetails.value
+  runData['uploadDetails'] = uploadDetai
   runData['uploadStatus'] = uploadStatus
 
   if (useChrome) chrome.storage.local.set(runData)
@@ -151,6 +156,11 @@ function resetStatus() {
   uploadProgressPercent.value = ''
   uploadProgressFiles.value = ''
 
+  uploadLocalInput.value = ''
+  uploadListRemote.value = ''
+  document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
+  document.querySelector('#uploadRemoteInput').dispatchEvent(new Event('keyup'))
+
   document.title = originalTitle
 }
 
@@ -195,7 +205,7 @@ function collectRemotePictures() {
 
   let remoteFiles = document.querySelector('#uploadRemoteInput').value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
   if (remoteFiles === null) {
-    window.alert('No remote files found in Remote upload area')
+    window.alert('No remote files found in remote upload area')
     return
   }
 
