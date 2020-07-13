@@ -112,8 +112,13 @@ select {
   background-color: rgba(0,0,0,0.3);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
-  width: calc(100% - 5em);
-  margin-left: 1em;
+  width: calc(100% - 6em);
+  margin-left: 2em;
+}
+
+#uploadArea input[type="checkbox"] {
+  width: auto;
+  margin: 0px;
 }
 
 #uploadArea textarea {
@@ -203,7 +208,6 @@ select {
   text-shadow: 2px 0px 1px rgba(255,255,255, 0.4);
 }
 
-
 #apikey {
   margin-bottom: 4em;
   background-color: rgba(0,0,0,0.45);
@@ -214,13 +218,12 @@ select {
 #uploadLog {
   height: 150px;
   width: calc(100% - 3em);
-  font-size: 1em;
+  font-size: 0.65em;
 }
 
 #uploadLog {
   min-height: 150px;
   font-style: normal;
-  font-size: 1em;
 }
 
 *::placeholder {
