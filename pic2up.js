@@ -132,6 +132,7 @@ function processUploadQueue() {
 
       if (uploadStatus['current'].name !== undefined) uploadPicture(uploadStatus['current'], false, uploadStatus['uploadIndex'].pop())
       else uploadPicture(uploadStatus['current'], true, -1)
+      window.requestAnimationFrame(processUploadQueue)
     }
   } else window.requestAnimationFrame(processUploadQueue)
 }
@@ -227,12 +228,6 @@ function uploadPicture(fileEntry, isRemote, localFileIndex) {
     'imgFormat': PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
     'noexif': uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
   }
-
-  console.log(imgItem)
-
-  uploadStatus['current'] = null
-  uploadStatus['uploadInProgess'] = false
-  return
 
   let fileNameLower = fileEntry['name'] !== undefined ? fileEntry['name'].toLowerCase() : fileEntry.toLowerCase()
   if (fileNameLower.endsWith('.webm') || fileNameLower.endsWith('.mp4')) delete imgItem['noexif']
