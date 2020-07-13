@@ -1,4 +1,5 @@
-@import("fonts/Montserrat/fonts/Montserrat.css");
+@import url("fonts/Montserrat/fonts/Montserrat.css");
+
 html,
 body {
   padding: 0px;
