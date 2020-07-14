@@ -116,7 +116,7 @@ function uploadItem(url, method, imgItem) {
   formData.append('apikey', PICFLASH_API_KEY)
   formData.append('formatliste', imgItem['imgFormat'])
   formData.append('userdrehung', imgItem['imgRotation'])
-  if (imgItem['noexif'] !== undefined) formData.append('noexif', true)
+  if (imgItem['noexif'] === true) formData.append('noexif', true)
 
   let request = new XMLHttpRequest
   request.addEventListener('readystatechange', handleXMLRequestStatus)
@@ -499,7 +499,6 @@ uploadRemoteInput.dispatchEvent(new Event('keyup'))
 let displayLinks = document.querySelectorAll('#dataTabsNav a')
 for (let displayLink of displayLinks) displayLink.addEventListener('click', createDataDisplay)
 let activeFunc = null
-document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
 
 function createDataDisplay(evt) {
   let dataFunc = evt.target.dataset['func']
@@ -524,8 +523,40 @@ function createDataDisplay(evt) {
 
   for (let fileKey of Object.keys(fileData)) {
     let current = fileData[fileKey]
-    let thumbnail = current['thumbnail']
-    let viewerId = current['hotlink'].match(/\/img\/[\d]*\/[\d]*\/[\d]*\/(.*)/i)[1]
+    let currentKey = null
+    let thumbnail = null
+    let viewerId = null
+    let format = null
+
+    try {
+      currentKey = current['sharelink'].match(/key=(.[^&]*)/i)[1]
+    } catch (error) {
+      uploadDetailsList.value += '/* ' + fileKey + ' */\n'
+      uploadDetailsList.value += 'Error reading out file information\n'
+      continue
+    }
+
+    try {
+      thumbnail = current['thumbnail']
+    } catch (error) {
+      uploadDetailsList.value += '/* ' + fileKey + ' */\n'
+      uploadDetailsList.value += 'Error reading out file information\n'
+      continue
+    }
+
+    try {
+      format = fileKey.match(/(\.webm|\.mp4)/gi)[0]
+    } catch (error) {
+      format = null
+    }
+
+    try {
+      viewerId = current['hotlink'].match(/\/img\/[\d]*\/[\d]*\/[\d]*\/(.*)/i)[1]
+    } catch (error) {
+      uploadDetailsList.value += '/* ' + fileKey + ' */\n'
+      uploadDetailsList.value += 'Error reading out file information\n'
+      continue
+    }
 
     uploadDetailsList.value += '/* ' + fileKey + ' */\n'
     if (dataFunc === 'listShareLinks') {
@@ -542,6 +573,9 @@ function createDataDisplay(evt) {
       uploadDetailsList.value += '[url=' + current['sharelink'] +'][img]https://www.picflash.org/viewer.php?img=' + viewerId + '[/img][/url]\n'
     } else if (dataFunc === 'listHTMLLinks') {
       uploadDetailsList.value += '<a href="' + current['sharelink'] + '"><img alt="" src="' + thumbnail + '" /></a>\n'
+    } else if (dataFunc === 'listBBVideoCodeLinks') {
+      if (format === null) continue
+      uploadDetailsList.value += '[video=picflash;' + fileKey.replace(format, '', 1) + currentKey + format + ']' + current['sharelink'] + '[/video]\n'
     } else if (dataFunc === 'listDeleteLinks') {
       uploadDetailsList.value += current['delete_url'] + '\n'
     } else {
