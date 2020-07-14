@@ -59,9 +59,9 @@ function clearUploadData() {
   uploadLocalInput.value = ''
   uploadListRemote.value = ''
   uploadRemoteInput.value = ''
+
   document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
   document.querySelector('#uploadRemoteInput').dispatchEvent(new Event('keyup'))
-
   if (useChrome) chrome.storage.local.set(runData)
   else browser.storage.local.set(runData)
 
@@ -73,7 +73,7 @@ function updateRuntimeData() {
   runData['uploadLog'] = uploadLog.value
   runData['uploadDetails'] = uploadDetails.value
   runData['uploadStatus'] = uploadStatus
-  runData['apikey'] = apiKey
+  runData['apikey'] = apiKey.value
 
   if (useChrome) chrome.storage.local.set(runData)
   else browser.storage.local.set(runData)
@@ -473,6 +473,7 @@ let uploadProgressPercent = document.querySelector('#uploadProgressPercent')
 let uploadProgressFiles = document.querySelector('#uploadProgressFiles')
 let uploadLog = document.querySelector('#uploadLog')
 let uploadDetails = document.querySelector('#uploadDetails')
+let uploadDetailsList = document.querySelector('#uploadDetailsList')
 let apiKey = document.querySelector('#apikey')
 let uploadListLocal = document.querySelector('#uploadListLocal')
 let uploadListRemote = document.querySelector('#uploadListRemote')
@@ -487,10 +488,70 @@ document.querySelector('#uploadLocalInput').addEventListener('change', readLocal
 document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
 document.querySelector('#submitRemoteUploadButton').addEventListener('click', collectRemotePictures)
 document.querySelector('#checkRemoteUploadsButton').addEventListener('click', checkRemoteUploads)
-document.querySelector('#clearUploadButton').addEventListener('click', clearUploadData)
+document.querySelector('#clearUploadHistoryButton').addEventListener('click', clearUploadData)
 
 // ---------------------------------------------------------------------------------------------------
 resetStatus()
 readRuntimeData()
 document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
 uploadRemoteInput.dispatchEvent(new Event('keyup'))
+
+let displayLinks = document.querySelectorAll('#dataTabsNav a')
+for (let displayLink of displayLinks) displayLink.addEventListener('click', createDataDisplay)
+let activeFunc = null
+document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
+
+function createDataDisplay(evt) {
+  let dataFunc = evt.target.dataset['func']
+  let details = uploadDetails.value
+
+  for (let displayLink of displayLinks) displayLink.classList.remove('active')
+
+  if (activeFunc === dataFunc || dataFunc === 'listEverything') {
+    document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
+    activeFunc = null
+    uploadDetailsList.classList.add('hidden')
+    uploadDetails.classList.remove('hidden')
+    return
+  }
+
+  let fileData = {}
+
+  let rows = details.trim().split('\n')
+  for (let row of rows) fileData[row.split(' : ', 1)[0].trim()] = JSON.parse(row.match(/(\{.[^}]*})/i)[0])
+
+  uploadDetailsList.value = ''
+
+  for (let fileKey of Object.keys(fileData)) {
+    let current = fileData[fileKey]
+    let thumbnail = current['thumbnail']
+    let viewerId = current['hotlink'].match(/\/img\/[\d]*\/[\d]*\/[\d]*\/(.*)/i)[1]
+
+    uploadDetailsList.value += '/* ' + fileKey + ' */\n'
+    if (dataFunc === 'listShareLinks') {
+      uploadDetailsList.value += current['sharelink'] + '\n'
+    } else if (dataFunc === 'listHotLinks') {
+      uploadDetailsList.value += 'https://www.picflash.org/viewer.php?img=' + viewerId + '\n'
+    } else if (dataFunc === 'listDeleteLinks') {
+      uploadDetailsList.value += current['delete_url'] + '\n'
+    } else if (dataFunc === 'listMarkdownLinks') {
+      uploadDetailsList.value += '[![Alternative text](' + thumbnail +' "Image title")] (https://www.picflash.org/viewer.php?img=' + viewerId + ')\n'
+    } else if (dataFunc === 'listBBcodesPreviewLinks') {
+      uploadDetailsList.value += '[url=' + current['sharelink'] +'][img]' + thumbnail + '[/img][/url]\n'
+    } else if (dataFunc === 'listBBcodesHotLinks') {
+      uploadDetailsList.value += '[url=' + current['sharelink'] +'][img]https://www.picflash.org/viewer.php?img=' + viewerId + '[/img][/url]\n'
+    } else if (dataFunc === 'listHTMLLinks') {
+      uploadDetailsList.value += '<a href="' + current['sharelink'] + '"><img alt="" src="' + thumbnail + '" /></a>\n'
+    } else if (dataFunc === 'listDeleteLinks') {
+      uploadDetailsList.value += current['delete_url'] + '\n'
+    } else {
+      uploadDetailsList.value = 'Invalid selection, this should not happen!\n'
+      continue
+    }
+  }
+
+  activeFunc = dataFunc
+  evt.target.classList.add('active')
+  uploadDetails.classList.add('hidden')
+  uploadDetailsList.classList.remove('hidden')
+}

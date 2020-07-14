@@ -56,7 +56,18 @@
     </div>
     <div>
       <h3 class="headline">Upload results</h3>
+      <ul id="dataTabsNav">
+        <li><a data-func="listShareLinks">Share link</a></li>
+        <li><a data-func="listHotLinks">Hotlink</a></li>
+        <li><a data-func="listMarkdownLinks">Markdown</a></li>
+        <li><a data-func="listBBcodesPreviewLinks">BB-Code with preview</a></li>
+        <li><a data-func="listBBcodesHotLinks">BB-Code with hotlink</a></li>
+        <li><a data-func="listHTMLLinks">HTML Thumbnail</a></li>
+        <li><a data-func="listDeleteLinks">Delete</a></li>
+        <li><a data-func="listEverything">Everything</a></li>
+      </ul>
       <textarea id="uploadDetails" readonly placeholder="Uploaded picflash information"></textarea>
+      <textarea class="hidden" readonly id="uploadDetailsList" placeholder="Uploaded picflash information"></textarea>
     </div>
     <button type="button" id="clearUploadHistoryButton">Clear upload history and details</button>
     <div class="clearfix"></div>

@@ -31,12 +31,12 @@ h1, h2, h3, h4, h5, h6, span, textarea, input {
   text-shadow: 2px 0px 1px rgba(0,0,0, 0.5);
 }
 
-.opera select {
-  padding: 1em 1.3em;
-  }
-
 .clearfix {
   clear: both;
+}
+
+.hidden {
+  display: none;
 }
 
 .background {
@@ -84,11 +84,6 @@ textarea {
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
 }
 
-.opera input {
-  width: 1.35rem;
-  height: 1.35rem;
-}
-
 textarea {
   background-color: rgba(0,0,0,0.55);
 }
@@ -97,12 +92,20 @@ select {
   padding: 0.35em 0.7em;
 }
 
+.opera input {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.opera select {
+  padding: 1em 1.3em;
+}
+
 .headline {
   margin-bottom: 0.5em;
   padding: 0em 1em;
   width: calc(100% - 2em);
 }
-
 
 #uploadArea input {
   color: #ff8;
@@ -129,7 +132,7 @@ select {
 }
 
 #uploadArea button,
-#clearUploadButton,
+#clearUploadHistoryButton,
 #checkRemoteUploadsButton  {
   float: right;
 }
@@ -188,8 +191,8 @@ select {
   flex: 2 1;
 }
 
-#clearUploadButton {
-  margin-bottom: 8em;
+#clearUploadHistoryButton {
+  margin-bottom: 4em;
 }
 
 #apikey,
@@ -198,6 +201,7 @@ select {
 #uploadProgressPercent,
 #uploadProgressFiles,
 #uploadDetails,
+#uploadDetailsList,
 #uploadLog {
   clear: both;
   width: calc(100% - 3em);
@@ -220,6 +224,7 @@ select {
 
 #uploadRemoteInput,
 #uploadDetails,
+#uploadDetailsList,
 #uploadLog {
   height: 150px;
   width: calc(100% - 3em);
@@ -237,3 +242,32 @@ select {
   text-shadow: 1px 1px 0px rgba(0,0,0, 0.475);
 }
 
+ #dataTabsNav {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  padding: 0px;
+  margin-left: 0.7em;
+ }
+
+ #dataTabsNav li {
+  flex: 1 1 1;
+  margin-top: 1.8em;
+  font-size: 0.6em;
+ }
+
+ #dataTabsNav li a {
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0.7em 1.5em;
+  color: #ff8;
+  border-radius: 8px 8px 0px 0px;
+  border: 2px solid #666;
+  background-color: rgba(0,0,0,0.5);
+  user-select: none;
+ }
+
+ #dataTabsNav li a.active {
+   background-color:  rgba(0,0,0,0.75);
+ }
