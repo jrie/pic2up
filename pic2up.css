@@ -179,6 +179,7 @@ select {
 #uploadListRemote li span {
   font-size: 0.75em;
   flex: 1 1;
+  margin-right: 1em;
 }
 
 #uploadListLocal li span:nth-of-type(1),

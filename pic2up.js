@@ -5,6 +5,7 @@ let useChrome = typeof (browser) === 'undefined'
 let hasConsole = typeof (console) !== 'undefined'
 
 if (useChrome) document.body.classList.add('opera')
+
 // ----------------------------------------------------------------------------
 function setApiKey(evt) {
   apiKey = evt.target.value.trim()
@@ -13,6 +14,7 @@ function setApiKey(evt) {
   updateRuntimeData()
 }
 
+// ----------------------------------------------------------------------------
 function readRuntimeData() {
   if (useChrome) {
     chrome.storage.local.get(function (data) {
@@ -408,6 +410,7 @@ function checkRemoteUploads(evt) {
   }
 }
 
+// ----------------------------------------------------------------------------
 function readRemotePictures(evt) {
   let remoteUploadData = evt.target.value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
 
