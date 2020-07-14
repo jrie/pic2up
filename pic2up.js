@@ -438,74 +438,11 @@ function readRemotePictures(evt) {
 }
 
 // ---------------------------------------------------------------------------------------------------
-let PICFLASH_API_KEY = ''
-let PICFLASH_API_URL = 'https://www.picflash.org/tool.php'
-let PICFLASH_USER_AGENT = 'pic2up'
-let PICFLASH_FORMATS = {
-  '-1': 'og',
-  '0': '80x80',
-  '1': '100x75',
-  '2': '100x100',
-  '3': '150x112',
-  '4': '468x60',
-  '5': '400x400',
-  '6': '320x240',
-  '7': '640x480',
-  '8': '800x600',
-  '9': '1024x768',
-  '10': '1280x1024',
-  '11': '1600x1200'
-}
-let PICFLASH_ROTATIONS = {
-  '-1': '00',
-  '0': '90',
-  '1': '180',
-  '2': '270'
-}
-
-// ---------------------------------------------------------------------------------------------------
-let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgress': false, 'uploadQueue': [], 'uploadError': [], 'current': null}
-let runData = {}
-let originalTitle = document.title
-
-let uploadCurrentFile = document.querySelector('#uploadCurrentFile')
-let uploadProgressPercent = document.querySelector('#uploadProgressPercent')
-let uploadProgressFiles = document.querySelector('#uploadProgressFiles')
-let uploadLog = document.querySelector('#uploadLog')
-let uploadDetails = document.querySelector('#uploadDetails')
-let uploadDetailsList = document.querySelector('#uploadDetailsList')
-let apiKey = document.querySelector('#apikey')
-let uploadListLocal = document.querySelector('#uploadListLocal')
-let uploadListRemote = document.querySelector('#uploadListRemote')
-let uploadRemoteInput = document.querySelector('#uploadRemoteInput')
-
-
-// ---------------------------------------------------------------------------------------------------
-apiKey.addEventListener('keyup', setApiKey)
-uploadRemoteInput.addEventListener('keyup', readRemotePictures)
-
-document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
-document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
-document.querySelector('#submitRemoteUploadButton').addEventListener('click', collectRemotePictures)
-document.querySelector('#checkRemoteUploadsButton').addEventListener('click', checkRemoteUploads)
-document.querySelector('#clearUploadHistoryButton').addEventListener('click', clearUploadData)
-
-// ---------------------------------------------------------------------------------------------------
-resetStatus()
-readRuntimeData()
-document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
-uploadRemoteInput.dispatchEvent(new Event('keyup'))
-
-let displayLinks = document.querySelectorAll('#dataTabsNav a')
-for (let displayLink of displayLinks) displayLink.addEventListener('click', createDataDisplay)
-let activeFunc = null
-
 function createDataDisplay(evt) {
   let dataFunc = evt.target.dataset['func']
   let details = uploadDetails.value
 
   for (let displayLink of displayLinks) displayLink.classList.remove('active')
-
   if (activeFunc === dataFunc || dataFunc === 'listEverything') {
     document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
     activeFunc = null
@@ -517,6 +454,10 @@ function createDataDisplay(evt) {
   let fileData = {}
 
   let rows = details.trim().split('\n')
+  if (rows[0] === '') {
+    document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
+    return
+  }
   for (let row of rows) fileData[row.split(' : ', 1)[0].trim()] = JSON.parse(row.match(/(\{.[^}]*})/i)[0])
 
   uploadDetailsList.value = ''
@@ -589,3 +530,67 @@ function createDataDisplay(evt) {
   uploadDetails.classList.add('hidden')
   uploadDetailsList.classList.remove('hidden')
 }
+
+// ---------------------------------------------------------------------------------------------------
+let PICFLASH_API_KEY = ''
+let PICFLASH_API_URL = 'https://www.picflash.org/tool.php'
+let PICFLASH_USER_AGENT = 'pic2up'
+let PICFLASH_FORMATS = {
+  '-1': 'og',
+  '0': '80x80',
+  '1': '100x75',
+  '2': '100x100',
+  '3': '150x112',
+  '4': '468x60',
+  '5': '400x400',
+  '6': '320x240',
+  '7': '640x480',
+  '8': '800x600',
+  '9': '1024x768',
+  '10': '1280x1024',
+  '11': '1600x1200'
+}
+let PICFLASH_ROTATIONS = {
+  '-1': '00',
+  '0': '90',
+  '1': '180',
+  '2': '270'
+}
+
+// ---------------------------------------------------------------------------------------------------
+let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgress': false, 'uploadQueue': [], 'uploadError': [], 'current': null}
+let runData = {}
+let originalTitle = document.title
+
+let uploadCurrentFile = document.querySelector('#uploadCurrentFile')
+let uploadProgressPercent = document.querySelector('#uploadProgressPercent')
+let uploadProgressFiles = document.querySelector('#uploadProgressFiles')
+let uploadLog = document.querySelector('#uploadLog')
+let uploadDetails = document.querySelector('#uploadDetails')
+let uploadDetailsList = document.querySelector('#uploadDetailsList')
+let apiKey = document.querySelector('#apikey')
+let uploadListLocal = document.querySelector('#uploadListLocal')
+let uploadListRemote = document.querySelector('#uploadListRemote')
+let uploadRemoteInput = document.querySelector('#uploadRemoteInput')
+
+
+// ---------------------------------------------------------------------------------------------------
+apiKey.addEventListener('keyup', setApiKey)
+uploadRemoteInput.addEventListener('keyup', readRemotePictures)
+
+document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
+document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
+document.querySelector('#submitRemoteUploadButton').addEventListener('click', collectRemotePictures)
+document.querySelector('#checkRemoteUploadsButton').addEventListener('click', checkRemoteUploads)
+document.querySelector('#clearUploadHistoryButton').addEventListener('click', clearUploadData)
+
+// ---------------------------------------------------------------------------------------------------
+resetStatus()
+readRuntimeData()
+document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
+uploadRemoteInput.dispatchEvent(new Event('keyup'))
+
+let displayLinks = document.querySelectorAll('#dataTabsNav a')
+for (let displayLink of displayLinks) displayLink.addEventListener('click', createDataDisplay)
+let activeFunc = null
+document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
