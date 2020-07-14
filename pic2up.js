@@ -7,13 +7,13 @@ let hasConsole = typeof (console) !== 'undefined'
 if (useChrome) document.body.classList.add('opera')
 // ----------------------------------------------------------------------------
 function setApiKey(evt) {
-  runData['apikey'] = evt.target.value.trim()
-  PICFLASH_API_KEY = runData['apikey']
+  apiKey = evt.target.value.trim()
+  runData['apikey'] = apiKey
+  PICFLASH_API_KEY = apiKey
   updateRuntimeData()
 }
 
 function readRuntimeData() {
-  apiKey.value = ''
   if (useChrome) {
     chrome.storage.local.get(function (data) {
       if (data === undefined) return
@@ -50,9 +50,6 @@ function clearUploadData() {
   uploadProgressPercent.value = ''
   uploadProgressFiles.value = ''
 
-  PICFLASH_API_KEY = apiKey.value
-  runData['apikey'] = PICFLASH_API_KEY
-
   runData['uploadLog'] = ''
   runData['uploadDetails'] = ''
   runData['uploadStatus'] = ''
@@ -72,8 +69,9 @@ function clearUploadData() {
 // ---------------------------------------------------------------------------------------------------
 function updateRuntimeData() {
   runData['uploadLog'] = uploadLog.value
-  runData['uploadDetails'] = uploadDetails
+  runData['uploadDetails'] = uploadDetails.value
   runData['uploadStatus'] = uploadStatus
+  runData['apikey'] = apiKey
 
   if (useChrome) chrome.storage.local.set(runData)
   else browser.storage.local.set(runData)
@@ -137,8 +135,8 @@ function processUploadQueue() {
 
       if (uploadStatus['current'].name !== undefined) uploadPicture(uploadStatus['current'], false, uploadStatus['uploadIndex'].pop())
       else uploadPicture(uploadStatus['current'], true, uploadStatus['uploadIndex'].pop())
-    }
-    window.requestAnimationFrame(processUploadQueue)
+      window.requestAnimationFrame(processUploadQueue)
+    } else uploadStatus['uploadInProgress'] = false
   } else window.requestAnimationFrame(processUploadQueue)
 }
 
@@ -168,6 +166,11 @@ function resetStatus() {
 function collectLocalPictures() {
   if (PICFLASH_API_KEY === '') {
     window.alert('API key is missing.')
+    return
+  }
+
+  if (uploadStatus['uploadInProgress'] === true) {
+    window.alert('A upload is already in progress. Please wait until the operation finishes.')
     return
   }
 
@@ -203,6 +206,11 @@ function collectLocalPictures() {
 function collectRemotePictures() {
   if (PICFLASH_API_KEY === '') {
     window.alert('API key is missing.')
+    return
+  }
+
+  if (uploadStatus['uploadInProgress'] === true) {
+    window.alert('A upload is already in progress. Please wait until the operation finishes.')
     return
   }
 
@@ -454,7 +462,7 @@ let PICFLASH_ROTATIONS = {
 
 // ---------------------------------------------------------------------------------------------------
 let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgress': false, 'uploadQueue': [], 'uploadError': [], 'current': null}
-let runData = { 'apikey': PICFLASH_API_KEY }
+let runData = {}
 let originalTitle = document.title
 
 let uploadCurrentFile = document.querySelector('#uploadCurrentFile')
