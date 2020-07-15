@@ -8,9 +8,8 @@ if (useChrome) document.body.classList.add('opera')
 
 // ----------------------------------------------------------------------------
 function setApiKey(evt) {
-  apiKey = evt.target.value.trim()
-  runData['apikey'] = apiKey
-  PICFLASH_API_KEY = apiKey
+  runData['apikey'] = apiKey.value.trim()
+  PICFLASH_API_KEY = runData['apikey']
   updateRuntimeData()
 }
 
