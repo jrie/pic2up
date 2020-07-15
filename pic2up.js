@@ -442,8 +442,18 @@ function createDataDisplay(evt) {
   let dataFunc = evt.target.dataset['func']
   let details = uploadDetails.value
 
-  for (let displayLink of displayLinks) displayLink.classList.remove('active')
-  if (activeFunc === dataFunc || dataFunc === 'listEverything') {
+  if (dataFunc !== undefined) {
+    for (let displayLink of displayLinks) displayLink.classList.remove('active')
+    if (activeFunc === dataFunc || dataFunc === 'listEverything') {
+      document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
+      activeFunc = null
+      uploadDetailsList.classList.add('hidden')
+      uploadDetails.classList.remove('hidden')
+      return
+    }
+  } else dataFunc = document.querySelector('#dataTabsNav a.active').dataset['func']
+
+  if (dataFunc === 'listEverything') {
     document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
     activeFunc = null
     uploadDetailsList.classList.add('hidden')
@@ -458,10 +468,10 @@ function createDataDisplay(evt) {
     document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
     return
   }
+
   for (let row of rows) fileData[row.split(' : ', 1)[0].trim()] = JSON.parse(row.match(/(\{.[^}]*})/i)[0])
 
   uploadDetailsList.value = ''
-
   for (let fileKey of Object.keys(fileData)) {
     let current = fileData[fileKey]
     let currentKey = null
@@ -498,8 +508,7 @@ function createDataDisplay(evt) {
       uploadDetailsList.value += 'Error reading out file information\n'
       continue
     }
-
-    uploadDetailsList.value += '/* ' + fileKey + ' */\n'
+    if (document.querySelector('#displayNamesCheckbox').checked) uploadDetailsList.value += '/* ' + fileKey + ' */\n'
     if (dataFunc === 'listShareLinks') {
       uploadDetailsList.value += current['sharelink'] + '\n'
     } else if (dataFunc === 'listHotLinks') {
@@ -583,6 +592,7 @@ document.querySelector('#submitLocalUploadButton').addEventListener('click', col
 document.querySelector('#submitRemoteUploadButton').addEventListener('click', collectRemotePictures)
 document.querySelector('#checkRemoteUploadsButton').addEventListener('click', checkRemoteUploads)
 document.querySelector('#clearUploadHistoryButton').addEventListener('click', clearUploadData)
+document.querySelector('#displayNamesCheckbox').addEventListener('click', createDataDisplay)
 
 // ---------------------------------------------------------------------------------------------------
 resetStatus()

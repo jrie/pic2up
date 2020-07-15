@@ -16,19 +16,37 @@ body {
   font-size: 1rem;
   font-family: 'Montserrat', sans;
   font-weight: 400;
-  text-shadow: 1px 1px 0px rgba(255,255,255, 0.275);
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.275);
   width: calc(100% - 4em);
   position: relative;
   background: url('img/bg_back.png') repeat scroll center center #000;
 }
 
-p, h1, h2, h3, h4, h5, h6, span {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+ul,
+li,
+input {
   padding: 0px;
   margin: 0px;
 }
 
-h1, h2, h3, h4, h5, h6, span, textarea, input {
-  text-shadow: 2px 0px 1px rgba(0,0,0, 0.5);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+textarea,
+input {
+  text-shadow: 2px 0px 1px rgba(0, 0, 0, 0.5);
 }
 
 .clearfix {
@@ -41,7 +59,7 @@ h1, h2, h3, h4, h5, h6, span, textarea, input {
 
 .background {
   background: url('img/bg.png') repeat -15px -15px #333;
-  box-shadow: 0px 0px 14px 14px rgba(0,0,0, 0.23);
+  box-shadow: 0px 0px 14px 14px rgba(0, 0, 0, 0.23);
   border: 2px solid #88a;
   border-radius: 8px;
   position: absolute;
@@ -65,7 +83,7 @@ button {
   margin: 0px;
   margin-top: 2em;
   margin-bottom: 3em;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
   text-transform: uppercase;
@@ -78,14 +96,14 @@ textarea {
   border-radius: 8px;
   padding: 1em 2em;
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.115);
+  background-color: rgba(0, 0, 0, 0.115);
   color: #ffff00;
-  text-shadow: 1px 1px 0px rgba(0,0,0, 0.475);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.475);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
 }
 
 textarea {
-  background-color: rgba(0,0,0,0.55);
+  background-color: rgba(0, 0, 0, 0.55);
 }
 
 select {
@@ -112,7 +130,7 @@ select {
   cursor: pointer;
   margin: 0px;
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
   border-radius: 8px;
   width: calc(100% - 6em);
@@ -128,12 +146,12 @@ select {
   margin: 0em 1em;
   width: calc(100% - 3.3em);
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 #uploadArea button,
 #clearUploadHistoryButton,
-#checkRemoteUploadsButton  {
+#checkRemoteUploadsButton {
   float: right;
 }
 
@@ -146,7 +164,7 @@ select {
   clear: both;
   list-style: none;
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   padding: 0px;
   margin: 0px;
   margin-left: 1em;
@@ -162,8 +180,8 @@ select {
   flex-wrap: wrap;
   padding: 1em;
   border: 2px solid #444;
-  background-color: rgba(0,0,0,0.1);
-  text-shadow: 1px 1px 0px rgba(0,0,0, 0.475);
+  background-color: rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.475);
 }
 
 #uploadListLocal li:last-of-type,
@@ -174,7 +192,7 @@ select {
 #uploadListLocal li:first-of-type,
 #uploadListRemote li:first-of-type {
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 8px 8px 0px 0px;
 }
 
@@ -212,14 +230,14 @@ select {
   padding: 1.3em 1em;
   resize: none;
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   color: #ffff00;
-  text-shadow: 2px 0px 1px rgba(255,255,255, 0.4);
+  text-shadow: 2px 0px 1px rgba(255, 255, 255, 0.4);
 }
 
 #apikey {
   margin-bottom: 4em;
-  background-color: rgba(0,0,0,0.45);
+  background-color: rgba(0, 0, 0, 0.45);
 }
 
 #uploadRemoteInput,
@@ -239,35 +257,59 @@ select {
 *::placeholder {
   font-style: italic;
   color: #ffff00;
-  text-shadow: 1px 1px 0px rgba(0,0,0, 0.475);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.475);
 }
 
- #dataTabsNav {
+#dataTabsNav {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   margin: 0px;
   padding: 0px;
   margin-left: 0.7em;
- }
+}
 
- #dataTabsNav li {
+#dataTabsNav li {
   flex: 1 1 1;
   margin-top: 1.8em;
   font-size: 0.6em;
- }
+}
 
- #dataTabsNav li a {
+#dataTabsNav li a {
   cursor: pointer;
   text-decoration: none;
   padding: 0.7em 1.5em;
   color: #ff8;
   border-radius: 8px 8px 0px 0px;
   border: 2px solid #666;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   user-select: none;
- }
+}
 
- #dataTabsNav li a.active {
-   background-color:  rgba(0,0,0,0.75);
- }
+#dataTabsNav li a.active {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+#displayFileNames {
+  color: #ff8;
+  cursor: pointer;
+  margin: 0px;
+  margin-bottom: 3em;
+  margin-left: 1em;
+  margin-top: 1.8em;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  float: left;
+  font-size: 0.7em;
+  border: 2px solid #666;
+  padding: 0.6em 1.5em;
+  user-select: none;
+}
+
+#displayNamesCheckbox {
+  vertical-align: middle;
+  margin-left: 1em;
+}
