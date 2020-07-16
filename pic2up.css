@@ -153,12 +153,13 @@ select {
 #clearUploadHistoryButton,
 #checkRemoteUploadsButton,
 #clearLocalUploadsButton,
-#submitRemoteUploadButton {
+#submitRemoteUploadButton,
+#cancelUploadsButton {
   float: right;
 }
 
-#checkRemoteUploadsButton,
-#clearLocalUploadsButton {
+#clearLocalUploadsButton,
+#checkRemoteUploadsButton {
   margin-right: 3em;
 }
 

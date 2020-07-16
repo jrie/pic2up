@@ -114,6 +114,12 @@ function uploadItem(url, method, imgItem) {
 
   let countPos = 0
   function handleXMLRequestProgress (evt) {
+    if (uploadStatus['cancelUpload'] === true) {
+      document.title = originalTitle
+      uploadStatus['currentRequest'].abort()
+      uploadStatus['uploadInProgress'] = false
+      return
+    }
     document.title = originalTitle + ': In upload'
     for (let x = 0; x < countPos; ++x) document.title += '.'
     if (++countPos > 3) countPos = 0
@@ -124,7 +130,7 @@ function uploadItem(url, method, imgItem) {
   if (imgItem['isRemote'] === true) formData.append('url[]', imgItem['file']);
   else formData.append('Datei[]', imgItem['file']);
 
-  formData.append('useragent', PICFLASH_USER_AGENT)
+  formData.append('user-agent', PICFLASH_USER_AGENT)
   formData.append('apikey', PICFLASH_API_KEY)
   formData.append('formatliste', imgItem['imgFormat'])
   formData.append('userdrehung', imgItem['imgRotation'])
@@ -133,12 +139,19 @@ function uploadItem(url, method, imgItem) {
   let request = new XMLHttpRequest
   request.addEventListener('readystatechange', handleXMLRequestStatus)
   request.upload.addEventListener('progress', handleXMLRequestProgress)
+  uploadStatus['currentRequest'] = request
   request.open(method, url)
   request.send(formData)
 }
 
 // ---------------------------------------------------------------------------------------------------
 function processUploadQueue() {
+  if (uploadStatus['cancelUpload'] === true) {
+    document.title = originalTitle
+    uploadStatus['uploadInProgress'] = false
+    return
+  }
+
   if (!uploadStatus['uploadInProgress']) {
     uploadStatus['uploadInProgress'] = true
     uploadStatus['current'] = uploadStatus['uploadQueue'].pop()
@@ -163,6 +176,8 @@ function resetStatus() {
   uploadStatus['uploadError'] = []
   uploadStatus['uploadQueue'] = []
   uploadStatus['uploadIndex'] = []
+  uploadStatus['cancelUpload'] = false
+  uploadStatus['currentRequest'] = null
 
   uploadCurrentFile.value = ''
   uploadProgressPercent.value = ''
@@ -188,7 +203,11 @@ function collectLocalPictures() {
     return
   }
 
+
   if (!window.confirm('Do you want to start the local upload?')) return
+
+  uploadStatus['cancelUpload'] = false
+  uploadStatus['currentRequest'] = null
 
   let localFiles = document.querySelector('#uploadLocalInput').files
   uploadStatus['cnt'] = 0
@@ -236,7 +255,10 @@ function collectRemotePictures() {
     return
   }
 
+
   window.alert('Starting remote file upload.')
+  uploadStatus['cancelUpload'] = false
+  uploadStatus['currentRequest'] = null
   uploadStatus['cnt'] = 0
   uploadStatus['cntTotal'] = remoteFiles.length
   uploadStatus['uploadQueue'] = []
@@ -457,7 +479,7 @@ function createDataDisplay(evt) {
   let details = uploadDetails.value
 
   if (dataFunc !== undefined) {
-    for (let displayLink of displayLinks) displayLink.classList.remove('active')
+    for (let displayLink of document.querySelectorAll('#dataTabsNav a')) displayLink.classList.remove('active')
     if (activeFunc === dataFunc || dataFunc === 'listEverything') {
       document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
       activeFunc = null
@@ -568,6 +590,16 @@ function viewUploadArea(evt) {
 }
 
 // ---------------------------------------------------------------------------------------------------
+function cancelUpload(evt) {
+  if (!uploadStatus['uploadInProgress']) {
+    window.alert('No upload is in progress, nothing to cancel')
+    return
+  }
+  uploadStatus['cancelUpload'] = true
+  window.alert('Uploads cancelled')
+}
+
+// ---------------------------------------------------------------------------------------------------
 let PICFLASH_API_KEY = ''
 let PICFLASH_API_URL = 'https://www.picflash.org/tool.php'
 let PICFLASH_USER_AGENT = 'pic2up'
@@ -594,7 +626,7 @@ let PICFLASH_ROTATIONS = {
 }
 
 // ---------------------------------------------------------------------------------------------------
-let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgress': false, 'uploadQueue': [], 'uploadError': [], 'current': null}
+let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgress': false, 'uploadQueue': [], 'uploadError': [], 'current': null, 'cancelUpload': false}
 let runData = {}
 let originalTitle = document.title
 let activeFunc = null
@@ -622,6 +654,7 @@ document.querySelector('#submitRemoteUploadButton').addEventListener('click', co
 document.querySelector('#checkRemoteUploadsButton').addEventListener('click', checkRemoteUploads)
 document.querySelector('#clearUploadHistoryButton').addEventListener('click', clearUploadData)
 document.querySelector('#displayNamesCheckbox').addEventListener('click', createDataDisplay)
+document.querySelector('#cancelUploadsButton').addEventListener('click', cancelUpload)
 
 // ---------------------------------------------------------------------------------------------------
 resetStatus()
