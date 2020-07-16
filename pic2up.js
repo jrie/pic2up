@@ -71,6 +71,7 @@ function clearUploadData() {
   uploadLocalInput.value = ''
   uploadListRemote.value = ''
   uploadRemoteInput.value = ''
+  uploadDetailsList.value = ''
 
   document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
   document.querySelector('#uploadRemoteInput').dispatchEvent(new Event('keyup'))
@@ -117,6 +118,7 @@ function uploadItem(url, method, imgItem) {
     if (uploadStatus['cancelUpload'] === true) {
       document.title = originalTitle
       uploadStatus['currentRequest'].abort()
+      uploadStatus['currentRequest'] = null
       uploadStatus['uploadInProgress'] = false
       return
     }
@@ -399,6 +401,7 @@ function clearUploadOptions(uploadList) {
 
 // ---------------------------------------------------------------------------------------------------
 function readLocalPictures(evt) {
+
   clearUploadOptions(uploadListLocal)
   for (let file of evt.target.files) createUploadDetails(file, uploadListLocal)
 
@@ -412,6 +415,14 @@ function readLocalPictures(evt) {
       li.className = 'noData'
       uploadListLocal.appendChild(li)
     }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+function readLocalCheckUpload (evt) {
+  if (uploadStatus['uploadInProgress']) {
+    evt.preventDefault()
+    window.alert('Cannot change files while uploading. Cancel the upload or wait until it finishes.')
   }
 }
 
@@ -648,6 +659,7 @@ apiKey.addEventListener('keyup', setApiKey)
 uploadRemoteInput.addEventListener('keyup', readRemotePictures)
 
 document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
+document.querySelector('#uploadLocalInput').addEventListener('click', readLocalCheckUpload)
 document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
 document.querySelector('#clearLocalUploadsButton').addEventListener('click', clearLocalUploadData)
 document.querySelector('#submitRemoteUploadButton').addEventListener('click', collectRemotePictures)
