@@ -1,7 +1,7 @@
 'use strict'
 
 let useChrome = typeof (browser) === 'undefined'
-let useTab = false
+let useTab = true
 
 if (useTab) {
     if (useChrome) chrome.tabs.create({'url': 'pic2up.html', 'title': ''});
