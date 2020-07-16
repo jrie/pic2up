@@ -132,9 +132,9 @@ select {
   border: 2px solid #666;
   background-color: rgba(0, 0, 0, 0.3);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
-  border-radius: 8px;
+  border-radius: 0px 8px 8px 8px;
   width: calc(100% - 6em);
-  margin-left: 2em;
+  margin-left: 1.25em;
 }
 
 #uploadArea input[type="checkbox"] {
@@ -149,13 +149,16 @@ select {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-#uploadArea button,
+#submitLocalUploadButton,
 #clearUploadHistoryButton,
-#checkRemoteUploadsButton {
+#checkRemoteUploadsButton,
+#clearLocalUploadsButton,
+#submitRemoteUploadButton {
   float: right;
 }
 
-#checkRemoteUploadsButton {
+#checkRemoteUploadsButton,
+#clearLocalUploadsButton {
   margin-right: 3em;
 }
 
@@ -167,7 +170,7 @@ select {
   background-color: rgba(0, 0, 0, 0.3);
   padding: 0px;
   margin: 0px;
-  margin-left: 1em;
+  margin-left: 0.5em;
   border-radius: 8px;
   margin-top: 2em;
 }
@@ -249,6 +252,10 @@ select {
   font-size: 0.65em;
 }
 
+#uploadRemoteInput {
+  border-radius: 0px 8px 8px 8px;
+}
+
 #uploadLog {
   min-height: 150px;
   font-style: normal;
@@ -260,7 +267,8 @@ select {
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.475);
 }
 
-#dataTabsNav {
+#dataTabsNav,
+#uploadTabsNav {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
@@ -269,13 +277,20 @@ select {
   margin-left: 0.7em;
 }
 
-#dataTabsNav li {
+#uploadTabsNav {
+  margin-bottom: 0.4em;
+}
+
+
+#dataTabsNav li,
+#uploadTabsNav li {
   flex: 1 1 1;
   margin-top: 1.8em;
   font-size: 0.6em;
 }
 
-#dataTabsNav li a {
+#dataTabsNav li a,
+#uploadTabsNav li a {
   cursor: pointer;
   text-decoration: none;
   padding: 0.7em 1.5em;
@@ -286,7 +301,8 @@ select {
   user-select: none;
 }
 
-#dataTabsNav li a.active {
+#dataTabsNav li a.active,
+#uploadTabsNav li a.active {
   background-color: rgba(0, 0, 0, 0.75);
 }
 

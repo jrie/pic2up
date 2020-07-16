@@ -42,6 +42,19 @@ function readRuntimeData() {
 }
 
 // ---------------------------------------------------------------------------------------------------
+function clearLocalUploadData() {
+  if (!window.confirm('Should all local upload data be cleared?')) return
+  uploadCurrentFile.value = ''
+  uploadProgressPercent.value = ''
+  uploadProgressFiles.value = ''
+
+  uploadLocalInput.value = ''
+  document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
+
+  window.alert('Successfully cleared local upload information.')
+}
+
+// ---------------------------------------------------------------------------------------------------
 function clearUploadData() {
   if (!window.confirm('Should all upload history be cleared?')) return
   uploadLog.value = ''
@@ -383,7 +396,6 @@ function readLocalPictures(evt) {
 // ---------------------------------------------------------------------------------------------------
 function checkRemoteUploads(evt) {
   function handleXMLRequestStatus (evt) {
-
     if (evt.target.readyState === 4 && evt.target.status === 200) {
       let size = evt.target.getResponseHeader('content-length')
       if (size === null) size = '0.00 MB'
@@ -395,8 +407,11 @@ function checkRemoteUploads(evt) {
     }
   }
 
-  let remoteUploadData = uploadRemoteInput.value.match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
-  if (remoteUploadData === null) return
+  let remoteUploadData = uploadRemoteInput.value.trim().match(/((http|https)\:[^\n]*\.(gif|jpeg|jpg|png|webm|mp4))/gi)
+  if (remoteUploadData === null) {
+    window.alert('No remote uploads present.')
+    return
+  }
 
   let index = 1
   for (let link of remoteUploadData) {
@@ -540,6 +555,19 @@ function createDataDisplay(evt) {
 }
 
 // ---------------------------------------------------------------------------------------------------
+function viewUploadArea(evt) {
+  let targetView = evt.target.dataset['target']
+
+  for (let viewLink of document.querySelectorAll('#uploadTabsNav a')) {
+    viewLink.classList.remove('active')
+    document.querySelector('#' + viewLink.dataset['target']).classList.add('hidden')
+  }
+
+  evt.target.classList.add('active')
+  document.querySelector('#' + targetView).classList.remove('hidden')
+}
+
+// ---------------------------------------------------------------------------------------------------
 let PICFLASH_API_KEY = ''
 let PICFLASH_API_URL = 'https://www.picflash.org/tool.php'
 let PICFLASH_USER_AGENT = 'pic2up'
@@ -569,6 +597,7 @@ let PICFLASH_ROTATIONS = {
 let uploadStatus = { 'cnt': 0, 'cntTotal': 0, 'uploadInProgress': false, 'uploadQueue': [], 'uploadError': [], 'current': null}
 let runData = {}
 let originalTitle = document.title
+let activeFunc = null
 
 let uploadCurrentFile = document.querySelector('#uploadCurrentFile')
 let uploadProgressPercent = document.querySelector('#uploadProgressPercent')
@@ -588,6 +617,7 @@ uploadRemoteInput.addEventListener('keyup', readRemotePictures)
 
 document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
 document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
+document.querySelector('#clearLocalUploadsButton').addEventListener('click', clearLocalUploadData)
 document.querySelector('#submitRemoteUploadButton').addEventListener('click', collectRemotePictures)
 document.querySelector('#checkRemoteUploadsButton').addEventListener('click', checkRemoteUploads)
 document.querySelector('#clearUploadHistoryButton').addEventListener('click', clearUploadData)
@@ -599,7 +629,8 @@ readRuntimeData()
 document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
 uploadRemoteInput.dispatchEvent(new Event('keyup'))
 
-let displayLinks = document.querySelectorAll('#dataTabsNav a')
-for (let displayLink of displayLinks) displayLink.addEventListener('click', createDataDisplay)
-let activeFunc = null
+for (let displayLink of document.querySelectorAll('#dataTabsNav a')) displayLink.addEventListener('click', createDataDisplay)
 document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
+
+for (let displayLink of document.querySelectorAll('#uploadTabsNav a')) displayLink.addEventListener('click', viewUploadArea)
+

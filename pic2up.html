@@ -13,10 +13,16 @@
       <h3 class="headline">Picflash API-Key</h3>
       <input type="password" id="apikey" type="text" placeholder="Insert your PicFlash API-Key here" />
     </div>
+
     <div id="uploadArea">
-      <div>
-        <h3 class="headline">Local upload</h3>
+      <h3 class="headline">Uploads</h3>
+      <ul id="uploadTabsNav">
+        <li><a href="#" data-target="localUpload" class="active" title="Upload local files">Local upload</a></li>
+        <li><a href="#" data-target="remoteUpload" title="Upload remote files">Remote upload</a></li>
+      </ul>
+      <div id="localUpload">
         <input id="uploadLocalInput" type="file" accept="image/gif, image/png, image/jpeg, video/webm, video/mp4" multiple="true" placeholder="Upload local images and videos" />
+
         <ul id="uploadListLocal">
           <li>
             <span class="fileNameHeader" title="The name of the file to be uploaded.">File name</span>
@@ -26,20 +32,22 @@
             <span class="fileRotationHeaqder" title="Degrees image should be rotated.">Rotation</span>
           </li>
         </ul>
+
         <button id="submitLocalUploadButton">Start local upload</button>
+        <button id="clearLocalUploadsButton">Clear local upload list</button>
+        <div class="clearfix"></div>
       </div>
-      <div>
-        <h3 class="headline">Remote upload</h3>
-        <textarea id="uploadRemoteInput" placeholder="Upload images remotely by pasting one remote (http/https) url a line"></textarea>
-        <ul id="uploadListRemote">
-          <li>
-            <span class="fileNameHeader" title="The name of the file to be uploaded.">File name</span>
-            <span class="fileSizeHeader" title="The size of the file in Megabytes.">Size in MB</span>
-            <span class="noExifHeader" title="Remove EXIF metadata from images.">Remove EXIF</span>
-            <span class="fileFormatHeader" title="Format of the image, the aspect ratio is keept.">Format</span>
-            <span class="fileRotationHeaqder" title="Degrees image should be rotated.">Rotation</span>
-          </li>
-        </ul>
+      <div id="remoteUpload" class="hidden">
+          <textarea id="uploadRemoteInput" placeholder="Upload images remotely by pasting one remote (http/https) url a line"></textarea>
+          <ul id="uploadListRemote">
+            <li>
+              <span class="fileNameHeader" title="The name of the file to be uploaded.">File name</span>
+              <span class="fileSizeHeader" title="The size of the file in Megabytes.">Size in MB</span>
+              <span class="noExifHeader" title="Remove EXIF metadata from images.">Remove EXIF</span>
+              <span class="fileFormatHeader" title="Format of the image, the aspect ratio is keept.">Format</span>
+              <span class="fileRotationHeaqder" title="Degrees image should be rotated.">Rotation</span>
+            </li>
+          </ul>
         <div>
           <button id="submitRemoteUploadButton">Start remote upload</button>
           <button id="checkRemoteUploadsButton">Get remote upload sizes</button>
