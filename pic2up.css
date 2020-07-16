@@ -73,7 +73,6 @@ input {
 .headline {
   width: 100%;
   clear: both;
-  margin-top: 2em;
 }
 
 button {
@@ -240,7 +239,7 @@ select {
 }
 
 #apikey {
-  margin-bottom: 4em;
+  margin-bottom: 3em;
   background-color: rgba(0, 0, 0, 0.45);
 }
 
