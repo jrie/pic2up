@@ -13,13 +13,13 @@ body {
   min-height: 350px;
   background-color: #121237;
   color: #c0c000;
-  font-size: 1rem;
+  font-size: 1em;
   font-family: 'Montserrat', sans;
   font-weight: 400;
   text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.275);
   width: calc(100% - 4em);
   position: relative;
-  background: url('img/bg_back.png') repeat scroll center center #000;
+  background: url('img/bg_back2.png') repeat scroll center center #000;
 }
 
 p,
@@ -58,7 +58,7 @@ input {
 }
 
 .background {
-  background: url('img/bg.png') repeat -15px -15px #333;
+  background: url('img/bg2.png') repeat -15px -15px #333;
   box-shadow: 0px 0px 14px 14px rgba(0, 0, 0, 0.23);
   border: 2px solid #88a;
   border-radius: 8px;
@@ -249,7 +249,7 @@ select {
 #uploadLog {
   height: 150px;
   width: calc(100% - 3em);
-  font-size: 0.65em;
+  font-size: 0.85em;
 }
 
 #uploadRemoteInput {
