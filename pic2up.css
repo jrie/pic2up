@@ -70,6 +70,18 @@ input {
   z-index: -1;
 }
 
+body.simpleMode {
+  background-image: none;
+}
+
+body.simpleMode .background {
+  background-image: none;
+}
+
+#simpleModeButton {
+  float: right;
+}
+
 .headline {
   width: 100%;
   clear: both;
@@ -107,6 +119,10 @@ textarea {
 
 select {
   padding: 0.35em 0.7em;
+}
+
+.opera {
+  font-size: 1.25em;
 }
 
 .opera input {

@@ -25,6 +25,8 @@ function readRuntimeData() {
         PICFLASH_API_KEY = data['apikey']
       }
 
+      if (data['simpleMode'] === true) document.body.classList.add('simpleMode')
+
       return true
     })
 
@@ -38,6 +40,8 @@ function readRuntimeData() {
       apiKey.value = data['apikey']
       PICFLASH_API_KEY = data['apikey']
     }
+    console.log(data)
+    if (data['simpleMode'] === true) document.body.classList.add('simpleMode')
   })
 }
 
@@ -87,6 +91,7 @@ function updateRuntimeData() {
   runData['uploadDetails'] = uploadDetails.value
   runData['uploadStatus'] = uploadStatus
   runData['apikey'] = apiKey.value
+  runData['simpleMode'] = document.body.classList.contains('simpleMode')
 
   if (useChrome) chrome.storage.local.set(runData)
   else browser.storage.local.set(runData)
@@ -663,6 +668,11 @@ let uploadRemoteInput = document.querySelector('#uploadRemoteInput')
 apiKey.addEventListener('keyup', setApiKey)
 uploadRemoteInput.addEventListener('keyup', readRemotePictures)
 
+function toggleSimpleLayout(evt) {
+  document.body.classList.toggle('simpleMode')
+  updateRuntimeData()
+}
+
 document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
 document.querySelector('#uploadLocalInput').addEventListener('click', readLocalCheckUpload)
 document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
@@ -672,6 +682,7 @@ document.querySelector('#checkRemoteUploadsButton').addEventListener('click', ch
 document.querySelector('#clearUploadHistoryButton').addEventListener('click', clearUploadData)
 document.querySelector('#displayNamesCheckbox').addEventListener('click', createDataDisplay)
 document.querySelector('#cancelUploadsButton').addEventListener('click', cancelUpload)
+document.querySelector('#simpleModeButton').addEventListener('click', toggleSimpleLayout)
 
 // ---------------------------------------------------------------------------------------------------
 resetStatus()
