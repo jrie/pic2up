@@ -121,8 +121,9 @@ select {
   padding: 0.35em 0.7em;
 }
 
-.opera {
-  font-size: 1.25em;
+body.opera {
+  font-size: 1.5em;
+  max-width: 1400px;
 }
 
 .opera input {
