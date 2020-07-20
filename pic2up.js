@@ -589,6 +589,7 @@ function createDataDisplay(evt) {
 
 // ---------------------------------------------------------------------------------------------------
 function viewUploadArea(evt) {
+  evt.preventDefault()
   let targetView = evt.target.dataset['target']
 
   for (let viewLink of document.querySelectorAll('#uploadTabsNav a')) {
