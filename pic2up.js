@@ -134,9 +134,9 @@ function uploadItem(url, method, imgItem) {
 
   formData.append('user-agent', PICFLASH_USER_AGENT)
   formData.append('apikey', PICFLASH_API_KEY)
-  formData.append('formatliste', imgItem['imgFormat'])
-  formData.append('userdrehung', imgItem['imgRotation'])
-  if (imgItem['noexif'] === true) formData.append('noexif', true)
+  if (imgItem['imgFormat'] !== undefined) formData.append('formatliste', imgItem['imgFormat'])
+  if (imgItem['imgRoation'] !== undefined) formData.append('userdrehung', imgItem['imgRoation'])
+  if (imgItem['noexif'] !== undefined && imgItem['noexif'] === true) formData.append('noexif', true)
 
   let request = new XMLHttpRequest
   request.addEventListener('readystatechange', handleXMLRequestStatus)
@@ -304,7 +304,11 @@ function uploadPicture(fileEntry, isRemote, localFileIndex) {
   }
 
   let fileNameLower = fileEntry['name'] !== undefined ? fileEntry['name'].toLowerCase() : fileEntry.toLowerCase()
-  if (fileNameLower.endsWith('.webm') || fileNameLower.endsWith('.mp4')) delete imgItem['noexif']
+  if (fileNameLower.endsWith('.webm') || fileNameLower.endsWith('.mp4')) {
+    delete imgItem['imgRotation']
+    delete imgItem['imgFormat']
+    delete imgItem['noexif']
+  }
 
   uploadItem(PICFLASH_API_URL, 'POST', imgItem)
 }
