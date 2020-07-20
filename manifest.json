@@ -27,7 +27,7 @@
   "homepage_url": "https://github.com/jrie/pic2up",
   "manifest_version": 2,
   "name": "pic2up",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "permissions": ["https://*.picflash.org/tool.php", "<all_urls>", "storage", "unlimitedStorage"],
   "background": {
     "page": "pic2up.html"
