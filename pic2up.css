@@ -7,7 +7,7 @@ body {
 }
 
 body {
-  max-width: 960px;
+  max-width: 1400px;
   margin: 75px auto 120px auto;
   min-width: 350px;
   min-height: 350px;
@@ -129,6 +129,11 @@ body.opera {
 .opera input {
   width: 1.35em;
   height: 1.35em;
+}
+
+.opera #uploadArea input[type="checkbox"] {
+  width: 1.75em;
+  height: 1.75em;
 }
 
 .opera select {
