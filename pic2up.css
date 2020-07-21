@@ -13,13 +13,17 @@ body {
   min-height: 350px;
   background-color: #121237;
   color: #c0c000;
-  font-size: 1em;
+  font-size: 1rem;
   font-family: 'Montserrat', sans;
   font-weight: 400;
   text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.275);
   width: calc(100% - 4em);
   position: relative;
   background: url('img/bg_back2.png') repeat scroll center center #000;
+}
+
+body.opera {
+  font-size: 1em;
 }
 
 p,
@@ -164,7 +168,7 @@ body.opera {
 }
 
 #uploadArea textarea {
-  margin: 0em 1em;
+  margin: 0em 0.8em;
   width: calc(100% - 3.3em);
   border: 2px solid #666;
   background-color: rgba(0, 0, 0, 0.5);
@@ -247,8 +251,8 @@ body.opera {
 #uploadDetailsList,
 #uploadLog {
   clear: both;
-  width: calc(100% - 3em);
-  margin: 0.5em 1em;
+  width: calc(100% - 3.1em - 2px);
+  margin: 0.5em 0.8em;
   font-style: italic;
   border: none;
   border-radius: 8px;
@@ -270,7 +274,19 @@ body.opera {
 #uploadDetailsList,
 #uploadLog {
   height: 150px;
-  width: calc(100% - 3em);
+  width: calc(100% - 3.1em - 2px);
+  font-size: 0.65em;
+}
+
+#uploadDetails {
+  margin-left: 1.1em;
+  border-radius: 0px 8px 8px 8px;
+}
+
+.opera #uploadRemoteInput,
+.opera #uploadDetails,
+.opera #uploadDetailsList,
+.opera #uploadLog {
   font-size: 0.85em;
 }
 
@@ -280,6 +296,7 @@ body.opera {
 
 #uploadLog {
   min-height: 150px;
+
   font-style: normal;
 }
 
