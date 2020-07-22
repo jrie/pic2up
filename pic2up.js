@@ -31,6 +31,7 @@ function readRuntimeData() {
         document.querySelector('#remoteUpload').classList.add('hidden')
         document.querySelector('#localUpload').classList.add('hidden')
         document.querySelector('#' + data['activeUploadView']).classList.remove('hidden')
+
       } else document.querySelector('#remoteUpload').classList.add('hidden')
 
       return true
@@ -52,7 +53,7 @@ function readRuntimeData() {
     if (data['activeUploadView'] !== undefined) {
       document.querySelector('#remoteUpload').classList.add('hidden')
       document.querySelector('#localUpload').classList.add('hidden')
-      document.querySelector('#' + data['activeUploadView']).classList.remove('hidden')
+      document.querySelector('[data-target="' + data['activeUploadView'] + '"]').dispatchEvent(new Event('click'))
     } else document.querySelector('#remoteUpload').classList.add('hidden')
   })
 }
