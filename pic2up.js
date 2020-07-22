@@ -328,6 +328,9 @@ function createUploadDetails(file, uploadList) {
 
   let li = document.createElement('li')
 
+  let fileName = file['name'].toLowerCase()
+  let isVideo = fileName.endsWith('.webm') || fileName.endsWith('.mp4')
+
   // --------------------------------------------------------------------------
   span = document.createElement('span')
   span.className = 'fileName'
@@ -339,6 +342,17 @@ function createUploadDetails(file, uploadList) {
   span.className = 'fileSize'
   span.appendChild(document.createTextNode((file.size / 1000000.0).toFixed(2).toString() + ' MB'))
   li.appendChild(span)
+
+  if (isVideo) {
+    span = document.createElement('span')
+    li.appendChild(span)
+    span = document.createElement('span')
+    li.appendChild(span)
+    span = document.createElement('span')
+    li.appendChild(span)
+    uploadList.appendChild(li)
+    return
+  }
 
   // --------------------------------------------------------------------------
   span = document.createElement('span')
