@@ -95,6 +95,7 @@ function updateRuntimeData() {
   runData['uploadLog'] = uploadLog.value
   runData['uploadDetails'] = uploadDetails.value
   runData['uploadStatus'] = uploadStatus
+  runData['uploadStatus']['currentRequest'] = null
   runData['apikey'] = apiKey.value
   runData['simpleMode'] = document.body.classList.contains('simpleMode')
 
@@ -107,8 +108,9 @@ function uploadItem(url, method, imgItem) {
   function handleXMLRequestStatus (evt) {
     if (evt.target.readyState === 4 && evt.target.status === 200) {
       ++uploadStatus['cnt']
-      uploadLog.value += 'Uploaded succesfully: "' + (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current']) + '"\n'
-      uploadDetails.value += (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current']) + ' : ' + JSON.stringify(JSON.parse(evt.target.responseText)) + '\n'
+      uploadLog.value += 'Upload finished: "' + (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current']) + '"\n'
+      let clearedResponse = evt.target.responseText.replace('null', '').trim()
+      uploadDetails.value += (uploadStatus['current'].name !== undefined ? uploadStatus['current'].name : uploadStatus['current']) + ' : ' + JSON.stringify(JSON.parse(clearedResponse)) + '\n'
       uploadProgressFiles.value = uploadStatus['cnt'].toString() + ' of ' + uploadStatus['cntTotal'].toString() + ' files'
       document.title = originalTitle
       uploadStatus['uploadError'].push(null)
@@ -116,7 +118,7 @@ function uploadItem(url, method, imgItem) {
       uploadStatus['uploadInProgress'] = false
     } else if (evt.target.readyState === 4 && evt.target.status !== 200) {
       document.title = originalTitle
-      uploadStatus['uploadError'].push(evt.target.responseText)
+      uploadStatus['uploadError'].push(clearedResponse)
 
       updateRuntimeData()
       uploadStatus['uploadInProgress'] = false
@@ -215,7 +217,6 @@ function collectLocalPictures() {
     return
   }
 
-
   if (!window.confirm('Do you want to start the local upload?')) return
 
   uploadStatus['cancelUpload'] = false
@@ -302,13 +303,13 @@ function uploadPicture(fileEntry, isRemote, localFileIndex) {
   if (isRemote) {
     if (!isVideo) {
       imgItem['imgRotation'] = PICFLASH_ROTATIONS[uploadListRemote.children[localFileIndex].querySelector('.fileRotation').value],
-      imgItem['imgFormat'] = PICFLASH_FORMATS[uploadListRemote.children[localFileIndex].querySelector('.fileFormat').value],
+      imgItem['imgFormat'] = PICFLASH_SIZE_FORMATS[uploadListRemote.children[localFileIndex].querySelector('.fileFormat').value],
       imgItem['noexif'] = uploadListRemote.children[localFileIndex].querySelector('.noExif').checked
     }
   } else {
     if (!isVideo) {
       imgItem['imgRotation'] = PICFLASH_ROTATIONS[uploadListLocal.children[localFileIndex].querySelector('.fileRotation').value],
-      imgItem['imgFormat'] = PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
+      imgItem['imgFormat'] = PICFLASH_SIZE_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
       imgItem['noexif'] = uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
     }
   }
@@ -371,9 +372,9 @@ function createUploadDetails(file, uploadList) {
   select.appendChild(option)
 
   optionValue = '-1'
-  for (let format of Object.keys(PICFLASH_FORMATS)) {
+  for (let format of Object.keys(PICFLASH_SIZE_FORMATS)) {
     optionValue = (parseInt(optionValue) + 1).toString()
-    format = PICFLASH_FORMATS[optionValue]
+    format = PICFLASH_SIZE_FORMATS[optionValue]
 
     if (format === undefined) break
     option = document.createElement('option')
@@ -636,7 +637,7 @@ function cancelUpload(evt) {
 let PICFLASH_API_KEY = ''
 let PICFLASH_API_URL = 'https://www.picflash.org/tool.php'
 let PICFLASH_USER_AGENT = 'pic2up'
-let PICFLASH_FORMATS = {
+let PICFLASH_SIZE_FORMATS = {
   '-1': 'og',
   '0': '80x80',
   '1': '100x75',
