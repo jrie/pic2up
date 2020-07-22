@@ -40,13 +40,18 @@ function readRuntimeData() {
       apiKey.value = data['apikey']
       PICFLASH_API_KEY = data['apikey']
     }
-    console.log(data)
+
     if (data['simpleMode'] === true) document.body.classList.add('simpleMode')
   })
 }
 
 // ---------------------------------------------------------------------------------------------------
 function clearLocalUploadData() {
+  if (uploadStatus['uploadInProgress']) {
+    window.alert('Cannot clear while upload in progress.')
+    return
+  }
+
   if (!window.confirm('Should all local upload data be cleared?')) return
   uploadCurrentFile.value = ''
   uploadProgressPercent.value = ''
@@ -290,29 +295,22 @@ function collectRemotePictures() {
 function uploadPicture(fileEntry, isRemote, localFileIndex) {
   let imgItem = {}
 
+  let fileNameLower = fileEntry['name'] !== undefined ? fileEntry['name'].toLowerCase() : fileEntry.toLowerCase()
+  let isVideo = fileNameLower.endsWith('.webm') || fileNameLower.endsWith('.mp4')
+  imgItem = {'file': fileEntry, 'isRemote': isRemote}
+
   if (isRemote) {
-    imgItem = {
-      'file': fileEntry,
-      'isRemote': true,
-      'imgRotation': PICFLASH_ROTATIONS[uploadListRemote.children[localFileIndex].querySelector('.fileRotation').value],
-      'imgFormat': PICFLASH_FORMATS[uploadListRemote.children[localFileIndex].querySelector('.fileFormat').value],
-      'noexif': uploadListRemote.children[localFileIndex].querySelector('.noExif').checked
+    if (!isVideo) {
+      imgItem['imgRotation'] = PICFLASH_ROTATIONS[uploadListRemote.children[localFileIndex].querySelector('.fileRotation').value],
+      imgItem['imgFormat'] = PICFLASH_FORMATS[uploadListRemote.children[localFileIndex].querySelector('.fileFormat').value],
+      imgItem['noexif'] = uploadListRemote.children[localFileIndex].querySelector('.noExif').checked
     }
   } else {
-    imgItem = {
-      'file': fileEntry,
-      'isRemote': false,
-      'imgRotation': PICFLASH_ROTATIONS[uploadListLocal.children[localFileIndex].querySelector('.fileRotation').value],
-      'imgFormat': PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
-      'noexif': uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
+    if (!isVideo) {
+      imgItem['imgRotation'] = PICFLASH_ROTATIONS[uploadListLocal.children[localFileIndex].querySelector('.fileRotation').value],
+      imgItem['imgFormat'] = PICFLASH_FORMATS[uploadListLocal.children[localFileIndex].querySelector('.fileFormat').value],
+      imgItem['noexif'] = uploadListLocal.children[localFileIndex].querySelector('.noExif').checked
     }
-  }
-
-  let fileNameLower = fileEntry['name'] !== undefined ? fileEntry['name'].toLowerCase() : fileEntry.toLowerCase()
-  if (fileNameLower.endsWith('.webm') || fileNameLower.endsWith('.mp4')) {
-    delete imgItem['imgRotation']
-    delete imgItem['imgFormat']
-    delete imgItem['noexif']
   }
 
   uploadItem(PICFLASH_API_URL, 'POST', imgItem)
