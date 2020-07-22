@@ -10,7 +10,7 @@ if (useChrome) document.body.classList.add('opera')
 function setApiKey(evt) {
   runData['apikey'] = apiKey.value.trim()
   PICFLASH_API_KEY = runData['apikey']
-  updateRuntimeData()
+  saveRuntimeData()
 }
 
 // ----------------------------------------------------------------------------
@@ -27,6 +27,12 @@ function readRuntimeData() {
 
       if (data['simpleMode'] === true) document.body.classList.add('simpleMode')
 
+      if (data['activeUploadView'] !== undefined) {
+        document.querySelector('#remoteUpload').classList.add('hidden')
+        document.querySelector('#localUpload').classList.add('hidden')
+        document.querySelector('#' + data['activeUploadView']).classList.remove('hidden')
+      } else document.querySelector('#remoteUpload').classList.add('hidden')
+
       return true
     })
 
@@ -42,6 +48,12 @@ function readRuntimeData() {
     }
 
     if (data['simpleMode'] === true) document.body.classList.add('simpleMode')
+
+    if (data['activeUploadView'] !== undefined) {
+      document.querySelector('#remoteUpload').classList.add('hidden')
+      document.querySelector('#localUpload').classList.add('hidden')
+      document.querySelector('#' + data['activeUploadView']).classList.remove('hidden')
+    } else document.querySelector('#remoteUpload').classList.add('hidden')
   })
 }
 
@@ -76,6 +88,7 @@ function clearUploadData() {
   runData['uploadLog'] = ''
   runData['uploadDetails'] = ''
   runData['uploadStatus'] = ''
+  runData['activeUploadView'] = 'local'
 
   uploadLocalInput.value = ''
   uploadListRemote.value = ''
@@ -91,7 +104,7 @@ function clearUploadData() {
 }
 
 // ---------------------------------------------------------------------------------------------------
-function updateRuntimeData() {
+function saveRuntimeData() {
   runData['uploadLog'] = uploadLog.value
   runData['uploadDetails'] = uploadDetails.value
   runData['uploadStatus'] = uploadStatus
@@ -114,13 +127,13 @@ function uploadItem(url, method, imgItem) {
       uploadProgressFiles.value = uploadStatus['cnt'].toString() + ' of ' + uploadStatus['cntTotal'].toString() + ' files'
       document.title = originalTitle
       uploadStatus['uploadError'].push(null)
-      updateRuntimeData()
+      saveRuntimeData()
       uploadStatus['uploadInProgress'] = false
     } else if (evt.target.readyState === 4 && evt.target.status !== 200) {
       document.title = originalTitle
       uploadStatus['uploadError'].push(clearedResponse)
 
-      updateRuntimeData()
+      saveRuntimeData()
       uploadStatus['uploadInProgress'] = false
     }
   }
@@ -621,6 +634,9 @@ function viewUploadArea(evt) {
 
   evt.target.classList.add('active')
   document.querySelector('#' + targetView).classList.remove('hidden')
+
+  runData['activeUploadView'] = targetView
+  saveRuntimeData()
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -683,7 +699,13 @@ uploadRemoteInput.addEventListener('keyup', readRemotePictures)
 
 function toggleSimpleLayout(evt) {
   document.body.classList.toggle('simpleMode')
-  updateRuntimeData()
+  saveRuntimeData()
+}
+
+function toggleRemoveAllExif(evt) {
+  let checkBoxes = document.querySelectorAll('#' + evt.target.parentNode.parentNode.parentNode.getAttribute('id') + ' input.noExif')
+  if (evt.target.checked === true) for (let checkbox of checkBoxes) checkbox.checked = true
+  else for (let checkbox of checkBoxes) checkbox.checked = false
 }
 
 document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
@@ -696,7 +718,6 @@ document.querySelector('#clearUploadHistoryButton').addEventListener('click', cl
 document.querySelector('#displayNamesCheckbox').addEventListener('click', createDataDisplay)
 document.querySelector('#cancelUploadsButton').addEventListener('click', cancelUpload)
 document.querySelector('#simpleModeButton').addEventListener('click', toggleSimpleLayout)
-
 // ---------------------------------------------------------------------------------------------------
 resetStatus()
 readRuntimeData()
@@ -707,4 +728,8 @@ for (let displayLink of document.querySelectorAll('#dataTabsNav a')) displayLink
 document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
 
 for (let displayLink of document.querySelectorAll('#uploadTabsNav a')) displayLink.addEventListener('click', viewUploadArea)
+for (let checkRemoveExifCheckbox of document.querySelectorAll('.toggleRemoveAllExif')) {
+  checkRemoveExifCheckbox.checked = false
+  checkRemoveExifCheckbox.addEventListener('click', toggleRemoveAllExif)
+}
 
