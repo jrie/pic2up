@@ -1,4 +1,4 @@
-@import url("fonts/Montserrat/fonts/Montserrat.css");
+@import url("/fonts/Montserrat/Montserrat.css");
 
 html,
 body {
@@ -51,6 +51,7 @@ span,
 textarea,
 input {
   text-shadow: 2px 0px 1px rgba(0, 0, 0, 0.5);
+  font-family: 'Montserrat', sans;
 }
 
 .clearfix {
