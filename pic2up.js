@@ -20,6 +20,12 @@ function readRuntimeData() {
       if (data === undefined) return
       if (data['uploadLog'] !== undefined) uploadLog.value = data['uploadLog']
       if (data['uploadDetails'] !== undefined) uploadDetails.value = data['uploadDetails']
+
+      if (data['uploadRemotes'] !== undefined) {
+        uploadRemoteInput.value = data['uploadRemotes']
+        uploadRemoteInput.dispatchEvent(new Event('keyup'))
+      }
+
       if (data['apikey'] !== undefined) {
         apiKey.value = data['apikey']
         PICFLASH_API_KEY = data['apikey']
@@ -30,9 +36,12 @@ function readRuntimeData() {
       if (data['activeUploadView'] !== undefined) {
         document.querySelector('#remoteUpload').classList.add('hidden')
         document.querySelector('#localUpload').classList.add('hidden')
+        document.querySelector('[data-target="' + data['activeUploadView'] + '"]').dispatchEvent(new Event('click'))
         document.querySelector('#' + data['activeUploadView']).classList.remove('hidden')
-
-      } else document.querySelector('#remoteUpload').classList.add('hidden')
+      } else {
+        document.querySelector('#localUpload').classList.remove('hidden')
+        document.querySelector('#remoteUpload').classList.add('hidden')
+      }
 
       return true
     })
@@ -43,6 +52,12 @@ function readRuntimeData() {
   browser.storage.local.get().then(function (data) {
     if (data['uploadLog'] !== undefined) uploadLog.value = data['uploadLog']
     if (data['uploadDetails'] !== undefined) uploadDetails.value = data['uploadDetails']
+
+    if (data['uploadRemotes'] !== undefined) {
+      uploadRemoteInput.value = data['uploadRemotes']
+      uploadRemoteInput.dispatchEvent(new Event('keyup'))
+    }
+
     if (data['apikey'] !== undefined) {
       apiKey.value = data['apikey']
       PICFLASH_API_KEY = data['apikey']
@@ -54,7 +69,11 @@ function readRuntimeData() {
       document.querySelector('#remoteUpload').classList.add('hidden')
       document.querySelector('#localUpload').classList.add('hidden')
       document.querySelector('[data-target="' + data['activeUploadView'] + '"]').dispatchEvent(new Event('click'))
-    } else document.querySelector('#remoteUpload').classList.add('hidden')
+      document.querySelector('#' + data['activeUploadView']).classList.remove('hidden')
+    } else {
+      document.querySelector('#localUpload').classList.remove('hidden')
+      document.querySelector('#remoteUpload').classList.add('hidden')
+    }
   })
 }
 
@@ -89,7 +108,8 @@ function clearUploadData() {
   runData['uploadLog'] = ''
   runData['uploadDetails'] = ''
   runData['uploadStatus'] = ''
-  runData['activeUploadView'] = 'local'
+  runData['uploadRemotes'] = ''
+  runData['activeUploadView'] = 'localUpload'
 
   uploadLocalInput.value = ''
   uploadListRemote.value = ''
@@ -109,6 +129,7 @@ function saveRuntimeData() {
   runData['uploadLog'] = uploadLog.value
   runData['uploadDetails'] = uploadDetails.value
   runData['uploadStatus'] = uploadStatus
+  runData['uploadRemotes'] = uploadRemoteInput.value.trim()
   runData['uploadStatus']['currentRequest'] = null
   runData['apikey'] = apiKey.value
   runData['simpleMode'] = document.body.classList.contains('simpleMode')
@@ -505,6 +526,8 @@ function readRemotePictures(evt) {
       let file = {'name': linkName[linkName.length - 1], 'size': 0}
       createUploadDetails(file, uploadListRemote)
     }
+
+    saveRuntimeData()
   }
 
   if (uploadListRemote.children.length > 0) {
@@ -698,17 +721,20 @@ let uploadRemoteInput = document.querySelector('#uploadRemoteInput')
 apiKey.addEventListener('keyup', setApiKey)
 uploadRemoteInput.addEventListener('keyup', readRemotePictures)
 
+// ---------------------------------------------------------------------------------------------------
 function toggleSimpleLayout(evt) {
   document.body.classList.toggle('simpleMode')
   saveRuntimeData()
 }
 
+// ---------------------------------------------------------------------------------------------------
 function toggleRemoveAllExif(evt) {
   let checkBoxes = document.querySelectorAll('#' + evt.target.parentNode.parentNode.parentNode.getAttribute('id') + ' input.noExif')
   if (evt.target.checked === true) for (let checkbox of checkBoxes) checkbox.checked = true
   else for (let checkbox of checkBoxes) checkbox.checked = false
 }
 
+// ---------------------------------------------------------------------------------------------------
 document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
 document.querySelector('#uploadLocalInput').addEventListener('click', readLocalCheckUpload)
 document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
@@ -733,4 +759,3 @@ for (let checkRemoveExifCheckbox of document.querySelectorAll('.toggleRemoveAllE
   checkRemoveExifCheckbox.checked = false
   checkRemoveExifCheckbox.addEventListener('click', toggleRemoveAllExif)
 }
-
