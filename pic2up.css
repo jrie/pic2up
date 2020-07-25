@@ -99,6 +99,12 @@ body.simpleMode .background {
   width: calc(100% - 3em);
 }
 
+#picflashStatusMsg {
+  font-weight: normal;
+  margin-left: 10px;
+  line-height: 1.5em;
+}
+
 .headline {
   width: 100%;
   clear: both;

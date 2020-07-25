@@ -691,9 +691,9 @@ function toggleRemoveAllExif(evt) {
 // ---------------------------------------------------------------------------------------------------
 function checkPicflashOnlineStatus(evt) {
   function dispayTimeout(evt) {
-    if (evt.target.readyState === 4 && evt.target.status === 0) window.alert('Picflash does not seem reachable, perhaps due to maintainance.\nUploading might not work.\n\nCheck the status again in some minutes or have a look at:\n' + PICFLASH_NGB_THREAD)
+    if (evt.target.readyState === 4 && evt.target.status === 0) window.alert('Picflash does not seem reachable, perhaps due to maintenance.\nUploading might not work.\n\nCheck the status again in some minutes or have a look at:\n' + PICFLASH_NGB_THREAD)
     document.title =  originalTitle + ' - Picflash.org not reachable'
-    document.querySelector('#picflashStatusMsg').textContent = 'Not reachable.'
+    document.querySelector('#picflashStatusMsg').textContent = 'Not reachable, check again in some minutes or visit: ' + PICFLASH_NGB_THREAD
   }
 
   function dispayOnlineMsg(evt) {
@@ -717,8 +717,7 @@ function checkPicflashOnlineStatus(evt) {
     document.title = originalTitle + ' - Checking Picflash status, this takes up to 5 seconds.'
   }
 
-  document.querySelector('#picflashStatusMsg').textContent = 'Checking status, takes up to 10 seconds'
-
+  document.querySelector('#picflashStatusMsg').textContent = 'Checking status, takes up to 10 seconds..'
   request.send()
 }
 
