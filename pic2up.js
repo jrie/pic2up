@@ -693,10 +693,15 @@ function checkPicflashOnlineStatus(evt) {
   function dispayTimeout(evt) {
     if (evt.target.readyState === 4 && evt.target.status === 0) window.alert('Picflash does not seem reachable, perhaps due to maintainance.\nUploading might not work.\n\nCheck the status again in some minutes or have a look at:\n' + PICFLASH_NGB_THREAD)
     document.title =  originalTitle + ' - Picflash.org not reachable'
+    document.querySelector('#picflashStatusMsg').textContent = 'Not reachable.'
   }
 
   function dispayOnlineMsg(evt) {
-    if (evt.target.readyState === 4 && evt.target.status === 200) document.title =  originalTitle + ' - Picflash.org ready.'
+    if (evt.target.readyState === 4 && evt.target.status === 0) {
+      if (evt.target.timeout === 5000) window.alert('Picflash.org is online and you can continue to upload.')
+    }
+    document.querySelector('#picflashStatusMsg').textContent = 'Ready.'
+    document.title =  originalTitle + ' - Picflash.org ready.'
   }
 
   let request = new XMLHttpRequest
@@ -706,11 +711,13 @@ function checkPicflashOnlineStatus(evt) {
 
   if (evt === undefined) {
     request.timeout = 10000
-    document.title = originalTitle + ' - Checkig Picflash status, this takes up to 10 seconds.'
+    document.title = originalTitle + ' - Checking Picflash status, this takes up to 10 seconds.'
   } else {
     request.timeout = 5000
-    document.title = originalTitle + ' - Checkig Picflash status, this takes up to 5 seconds.'
+    document.title = originalTitle + ' - Checking Picflash status, this takes up to 5 seconds.'
   }
+
+  document.querySelector('#picflashStatusMsg').textContent = 'Checking status, takes up to 10 seconds'
 
   request.send()
 }

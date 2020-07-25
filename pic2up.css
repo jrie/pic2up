@@ -89,6 +89,16 @@ body.simpleMode .background {
   float: right;
 }
 
+#picflashStatus {
+  font-weight: bold;
+  margin-left: 0px;
+  background-color: rgba(0,0,0, 0.4);
+  padding: 0.5em 1.5em;
+  border-radius: 8px;
+  display: block;
+  width: calc(100% - 3em);
+}
+
 .headline {
   width: 100%;
   clear: both;
