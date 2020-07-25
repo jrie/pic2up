@@ -150,12 +150,14 @@ function uploadItem(url, method, imgItem) {
       document.title = originalTitle
       uploadStatus['uploadError'].push(null)
       saveRuntimeData()
+      document.querySelector('#dataTabsNav a.active').dispatchEvent(new Event('click'))
       uploadStatus['uploadInProgress'] = false
     } else if (evt.target.readyState === 4 && evt.target.status !== 200) {
       document.title = originalTitle
       uploadStatus['uploadError'].push(clearedResponse)
 
       saveRuntimeData()
+      document.querySelector('#dataTabsNav a.active').dispatchEvent(new Event('click'))
       uploadStatus['uploadInProgress'] = false
     }
   }
@@ -179,7 +181,6 @@ function uploadItem(url, method, imgItem) {
   if (imgItem['isRemote'] === true) formData.append('url[]', imgItem['file']);
   else formData.append('Datei[]', imgItem['file']);
 
-  formData.append('user-agent', PICFLASH_USER_AGENT)
   formData.append('apikey', PICFLASH_API_KEY)
   if (imgItem['imgFormat'] !== undefined) formData.append('formatliste', imgItem['imgFormat'])
   if (imgItem['imgRoation'] !== undefined) formData.append('userdrehung', imgItem['imgRoation'])
@@ -674,9 +675,50 @@ function cancelUpload(evt) {
 }
 
 // ---------------------------------------------------------------------------------------------------
+function toggleSimpleLayout(evt) {
+  document.body.classList.toggle('simpleMode')
+  saveRuntimeData()
+}
+
+// ---------------------------------------------------------------------------------------------------
+function toggleRemoveAllExif(evt) {
+  let checkBoxes = document.querySelectorAll('#' + evt.target.parentNode.parentNode.parentNode.getAttribute('id') + ' input.noExif')
+  if (evt.target.checked === true) for (let checkbox of checkBoxes) checkbox.checked = true
+  else for (let checkbox of checkBoxes) checkbox.checked = false
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+function checkPicflashOnlineStatus(evt) {
+  function dispayTimeout(evt) {
+    if (evt.target.readyState === 4 && evt.target.status === 0) window.alert('Picflash does not seem reachable, perhaps due to maintainance.\nUploading might not work.\n\nCheck the status again in some minutes or have a look at:\n' + PICFLASH_NGB_THREAD)
+    document.title =  originalTitle + ' - Picflash.org not reachable'
+  }
+
+  function dispayOnlineMsg(evt) {
+    if (evt.target.readyState === 4 && evt.target.status === 200) document.title =  originalTitle + ' - Picflash.org ready.'
+  }
+
+  let request = new XMLHttpRequest
+  request.addEventListener('timeout', dispayTimeout)
+  request.addEventListener('readystatechange', dispayOnlineMsg)
+  request.open('HEAD', PICFLASH_API_URL)
+
+  if (evt === undefined) {
+    request.timeout = 10000
+    document.title = originalTitle + ' - Checkig Picflash status, this takes up to 10 seconds.'
+  } else {
+    request.timeout = 5000
+    document.title = originalTitle + ' - Checkig Picflash status, this takes up to 5 seconds.'
+  }
+
+  request.send()
+}
+
+// ---------------------------------------------------------------------------------------------------
 let PICFLASH_API_KEY = ''
+let PICFLASH_NGB_THREAD = 'https://ngb.to/forums/97-PicFlash-org'
 let PICFLASH_API_URL = 'https://www.picflash.org/tool.php'
-let PICFLASH_USER_AGENT = 'pic2up'
 let PICFLASH_SIZE_FORMATS = {
   '-1': 'og',
   '0': '80x80',
@@ -722,19 +764,6 @@ apiKey.addEventListener('keyup', setApiKey)
 uploadRemoteInput.addEventListener('keyup', readRemotePictures)
 
 // ---------------------------------------------------------------------------------------------------
-function toggleSimpleLayout(evt) {
-  document.body.classList.toggle('simpleMode')
-  saveRuntimeData()
-}
-
-// ---------------------------------------------------------------------------------------------------
-function toggleRemoveAllExif(evt) {
-  let checkBoxes = document.querySelectorAll('#' + evt.target.parentNode.parentNode.parentNode.getAttribute('id') + ' input.noExif')
-  if (evt.target.checked === true) for (let checkbox of checkBoxes) checkbox.checked = true
-  else for (let checkbox of checkBoxes) checkbox.checked = false
-}
-
-// ---------------------------------------------------------------------------------------------------
 document.querySelector('#uploadLocalInput').addEventListener('change', readLocalPictures)
 document.querySelector('#uploadLocalInput').addEventListener('click', readLocalCheckUpload)
 document.querySelector('#submitLocalUploadButton').addEventListener('click', collectLocalPictures)
@@ -745,9 +774,13 @@ document.querySelector('#clearUploadHistoryButton').addEventListener('click', cl
 document.querySelector('#displayNamesCheckbox').addEventListener('click', createDataDisplay)
 document.querySelector('#cancelUploadsButton').addEventListener('click', cancelUpload)
 document.querySelector('#simpleModeButton').addEventListener('click', toggleSimpleLayout)
+document.querySelector('#checkOnlineStatusButton').addEventListener('click', checkPicflashOnlineStatus)
 // ---------------------------------------------------------------------------------------------------
+
 resetStatus()
 readRuntimeData()
+checkPicflashOnlineStatus()
+
 document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
 uploadRemoteInput.dispatchEvent(new Event('keyup'))
 
@@ -759,3 +792,4 @@ for (let checkRemoveExifCheckbox of document.querySelectorAll('.toggleRemoveAllE
   checkRemoveExifCheckbox.checked = false
   checkRemoveExifCheckbox.addEventListener('click', toggleRemoveAllExif)
 }
+
