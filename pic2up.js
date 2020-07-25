@@ -712,12 +712,14 @@ function checkPicflashOnlineStatus(evt) {
   if (evt === undefined) {
     request.timeout = 10000
     document.title = originalTitle + ' - Checking Picflash status, this takes up to 10 seconds.'
+    document.querySelector('#picflashStatusMsg').textContent = 'Checking status, takes up to 10 seconds..'
   } else {
     request.timeout = 5000
     document.title = originalTitle + ' - Checking Picflash status, this takes up to 5 seconds.'
+    document.querySelector('#picflashStatusMsg').textContent = 'Checking status, takes up to 5 seconds..'
   }
 
-  document.querySelector('#picflashStatusMsg').textContent = 'Checking status, takes up to 10 seconds..'
+
   request.send()
 }
 
