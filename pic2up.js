@@ -149,15 +149,20 @@ function uploadItem(url, method, imgItem) {
       uploadProgressFiles.value = uploadStatus['cnt'].toString() + ' of ' + uploadStatus['cntTotal'].toString() + ' files'
       document.title = originalTitle
       uploadStatus['uploadError'].push(null)
+
       saveRuntimeData()
-      document.querySelector('#dataTabsNav a.active').dispatchEvent(new Event('click'))
+      let evtShadow = {'target': document.querySelector('#dataTabsNav a.active'), 'sub': true}
+      createDataDisplay(evtShadow)
+
       uploadStatus['uploadInProgress'] = false
     } else if (evt.target.readyState === 4 && evt.target.status !== 200) {
       document.title = originalTitle
       uploadStatus['uploadError'].push(clearedResponse)
 
       saveRuntimeData()
-      document.querySelector('#dataTabsNav a.active').dispatchEvent(new Event('click'))
+      let evtShadow = {'target': document.querySelector('#dataTabsNav a.active'), 'sub': true}
+      createDataDisplay(evtShadow)
+
       uploadStatus['uploadInProgress'] = false
     }
   }
@@ -549,23 +554,25 @@ function createDataDisplay(evt) {
   let dataFunc = evt.target.dataset['func']
   let details = uploadDetails.value
 
-  if (dataFunc !== undefined) {
-    for (let displayLink of document.querySelectorAll('#dataTabsNav a')) displayLink.classList.remove('active')
-    if (activeFunc === dataFunc || dataFunc === 'listEverything') {
+  if (evt['sub'] === undefined) {
+    if (dataFunc !== undefined) {
+      for (let displayLink of document.querySelectorAll('#dataTabsNav a')) displayLink.classList.remove('active')
+      if (activeFunc === dataFunc || dataFunc === 'listEverything') {
+        document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
+        activeFunc = null
+        uploadDetailsList.classList.add('hidden')
+        uploadDetails.classList.remove('hidden')
+        return
+      }
+    } else dataFunc = document.querySelector('#dataTabsNav a.active').dataset['func']
+
+    if (dataFunc === 'listEverything') {
       document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
       activeFunc = null
       uploadDetailsList.classList.add('hidden')
       uploadDetails.classList.remove('hidden')
       return
     }
-  } else dataFunc = document.querySelector('#dataTabsNav a.active').dataset['func']
-
-  if (dataFunc === 'listEverything') {
-    document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
-    activeFunc = null
-    uploadDetailsList.classList.add('hidden')
-    uploadDetails.classList.remove('hidden')
-    return
   }
 
   let fileData = {}
@@ -697,7 +704,7 @@ function checkPicflashOnlineStatus(evt) {
   }
 
   function dispayOnlineMsg(evt) {
-    if (evt.target.readyState === 4 && evt.target.status === 0) {
+    if (evt.target.readyState === 4 && evt.target.status === 200) {
       if (evt.target.timeout === 5000) window.alert('Picflash.org is online and you can continue to upload.')
     }
     document.querySelector('#picflashStatusMsg').textContent = 'Ready.'
@@ -718,7 +725,6 @@ function checkPicflashOnlineStatus(evt) {
     document.title = originalTitle + ' - Checking Picflash status, this takes up to 5 seconds.'
     document.querySelector('#picflashStatusMsg').textContent = 'Checking status, takes up to 5 seconds..'
   }
-
 
   request.send()
 }
