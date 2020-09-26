@@ -698,17 +698,19 @@ function toggleRemoveAllExif(evt) {
 // ---------------------------------------------------------------------------------------------------
 function checkPicflashOnlineStatus(evt) {
   function dispayTimeout(evt) {
-    if (evt.target.readyState === 4 && evt.target.status === 0) window.alert('Picflash does not seem reachable, perhaps due to maintenance.\nUploading might not work.\n\nCheck the status again in some minutes or have a look at:\n' + PICFLASH_NGB_THREAD)
-    document.title =  originalTitle + ' - Picflash.org not reachable'
-    document.querySelector('#picflashStatusMsg').textContent = 'Not reachable, check again in some minutes or visit: ' + PICFLASH_NGB_THREAD
+    if (evt.target.readyState === 4 && evt.target.status === 0) {
+      document.title = originalTitle + ' - Picflash.org not reachable'
+      document.querySelector('#picflashStatusMsg').textContent = 'Not reachable, check again in some minutes or visit: ' + PICFLASH_NGB_THREAD
+      window.alert('Picflash does not seem reachable, perhaps due to maintenance.\nUploading might not work.\n\nCheck the status again in some minutes or have a look at:\n' + PICFLASH_NGB_THREAD)
+    }
   }
 
   function dispayOnlineMsg(evt) {
     if (evt.target.readyState === 4 && evt.target.status === 200) {
-      if (evt.target.timeout === 5000) window.alert('Picflash.org is online and you can continue to upload.')
+      document.querySelector('#picflashStatusMsg').textContent = 'Ready.'
+      document.title = originalTitle + ' - Picflash.org ready.'
+      window.alert('Picflash.org is online and you can continue to upload.')
     }
-    document.querySelector('#picflashStatusMsg').textContent = 'Ready.'
-    document.title =  originalTitle + ' - Picflash.org ready.'
   }
 
   let request = new XMLHttpRequest
