@@ -700,7 +700,12 @@ function checkPicflashOnlineStatus(evt) {
   function dispayTimeout(evt) {
     if (evt.target.readyState === 4 && evt.target.status === 0) {
       document.title = originalTitle + ' - Picflash.org not reachable'
-      document.querySelector('#picflashStatusMsg').textContent = 'Not reachable, check again in some minutes or visit: ' + PICFLASH_NGB_THREAD
+      document.querySelector('#picflashStatusMsg').textContent = 'Not reachable, check again in some minutes or visit: '
+      let link = document.createElement('a')
+      link.target = '_blank'
+      link.href = PICFLASH_NGB_THREAD
+      link.textContent = 'NGB.to support thread'
+      document.querySelector('#picflashStatusMsg').appendChild(link)
       window.alert('Picflash does not seem reachable, perhaps due to maintenance.\nUploading might not work.\n\nCheck the status again in some minutes or have a look at:\n' + PICFLASH_NGB_THREAD)
     }
   }
