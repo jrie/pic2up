@@ -97,7 +97,14 @@ function clearLocalUploadData() {
 
 // ---------------------------------------------------------------------------------------------------
 function clearUploadData() {
+  if (uploadStatus['uploadInProgress']) {
+    window.alert('Cannot clear while upload in progress.')
+    return
+  }
+
   if (!window.confirm('Should all upload history be cleared?')) return
+
+
   uploadLog.value = ''
   uploadDetails.value = ''
 
@@ -565,14 +572,14 @@ function createDataDisplay(evt) {
         return
       }
     } else dataFunc = document.querySelector('#dataTabsNav a.active').dataset['func']
+   }
 
-    if (dataFunc === 'listEverything') {
-      document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
-      activeFunc = null
-      uploadDetailsList.classList.add('hidden')
-      uploadDetails.classList.remove('hidden')
-      return
-    }
+  if (dataFunc !== undefined && dataFunc === 'listEverything') {
+    document.querySelector('#dataTabsNav a[data-func="listEverything"]').classList.add('active')
+    activeFunc = null
+    uploadDetailsList.classList.add('hidden')
+    uploadDetails.classList.remove('hidden')
+    return
   }
 
   let fileData = {}
@@ -622,6 +629,7 @@ function createDataDisplay(evt) {
       uploadDetailsList.value += 'Error reading out file information\n'
       continue
     }
+
     if (document.querySelector('#displayNamesCheckbox').checked) uploadDetailsList.value += '/* ' + fileKey + ' */\n'
     if (dataFunc === 'listShareLinks') {
       uploadDetailsList.value += current['sharelink'] + '\n'
