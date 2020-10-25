@@ -9,7 +9,8 @@ Upload images (gif/jpg/png)  and videos (webm) to PicFlash.org - up to 100 MB ea
 
 A free account at https://picflash.org is required in order to make use of this Addon and a free API-Key, which you get automatically after signing up, to use this service. You can upload local files as well as making remote uploads to Picflash. You find the API-Key in the settings panel on Picflash.
 
-[**German support for Picflash.org at**](https://ngb.to/forums/97-PicFlash-org)
+[**German support for Pic2up**](https://ngb.to/threads/105183-Pic2up-Das-Picflash-Uploader-Browser-Add-on)
+[**German support for Picflash.org**](https://ngb.to/forums/97-PicFlash-org)
 
 ### Screenshots
 
