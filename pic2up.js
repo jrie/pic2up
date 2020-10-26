@@ -808,7 +808,7 @@ document.querySelector('#checkOnlineStatusButton').addEventListener('click', che
 
 resetStatus()
 readRuntimeData()
-checkPicflashOnlineStatus()
+//checkPicflashOnlineStatus() // Creates a console or alert on startup which is simply wrong
 
 document.querySelector('#uploadLocalInput').dispatchEvent(new Event('change'))
 uploadRemoteInput.dispatchEvent(new Event('keyup'))
