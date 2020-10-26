@@ -4,8 +4,9 @@ Upload images (gif/jpg/png)  and videos (webm, mp4) to PicFlash.org - up to 100 
 
 ### Get started
 
-* **Opera/Chrome**: Download the latest .crx from the [releases page](https://github.com/jrie/pic2up/releases)
+* **Opera**: [Opera Addon page](https://addons.opera.com/en/extensions/details/pic2up/)
 * **Firefox**: [Firefox Addon page](https://addons.mozilla.org/en-US/firefox/addon/pic2up/)
+* **Chrome**: Download the latest .crx from the [releases page](https://github.com/jrie/pic2up/releases)
 
 A free account at https://picflash.org is required in order to make use of this Addon and a free API-Key, which you get automatically after signing up, to use this service. You can upload local files as well as making remote uploads to Picflash. You find the API-Key in the settings panel on Picflash.
 
