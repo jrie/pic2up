@@ -1,6 +1,6 @@
 # pic2up
 A image uploader browser add on for the great image hoster [PicFlash.org](https://picflash.org).
-Upload images (gif/jpg/png)  and videos (webm, mp4) to PicFlash.org - up to 100 MB each file.
+Upload images (gif/jpg/png)  and videos (webm/mp4) to PicFlash.org - up to 100 MB each file. Also remote upload is supported.
 
 ### Get started
 
