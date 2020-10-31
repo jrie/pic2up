@@ -113,11 +113,6 @@ body.simpleMode .background {
   line-height: 1.5em;
 }
 
-.headline {
-  width: 100%;
-  clear: both;
-}
-
 button {
   color: #ff8;
   cursor: pointer;
@@ -139,7 +134,7 @@ textarea {
   padding: 1em 2em;
   border: 2px solid #666;
   background-color: rgba(0, 0, 0, 0.115);
-  color: #ffff00;
+  color: whitesmoke;
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.475);
   /*box-shadow: 2px 0px 8px rgba(255,255,0,0.6);*/
 }
@@ -172,7 +167,9 @@ body.opera {
 }
 
 .headline {
+  clear: both;
   margin-bottom: 0.5em;
+  margin-top: 1em;
   padding: 0em 1em;
   width: calc(100% - 2em);
 }
@@ -187,6 +184,7 @@ body.opera {
   border-radius: 0px 8px 8px 8px;
   width: calc(100% - 6em);
   margin-left: 1.25em;
+  color: whitesmoke;
 }
 
 #uploadArea input[type="checkbox"] {
@@ -227,6 +225,21 @@ body.opera {
   margin-left: 0.5em;
   border-radius: 8px;
   margin-top: 2em;
+  color: whitesmokesmoke;
+}
+
+.fileNameHeader,
+.fileSizeHeader,
+.noExifHeader,
+.fileFormatHeader,
+.fileRotationHeader {
+  color: #ff8;
+}
+
+.noData,
+.fileName,
+.fileSize {
+  color: whitesmoke;
 }
 
 #uploadListLocal li,
@@ -281,14 +294,13 @@ body.opera {
   clear: both;
   width: calc(100% - 3.1em - 2px);
   margin: 0.5em 0.8em;
-  font-style: italic;
   border: none;
   border-radius: 8px;
   padding: 1.3em 1em;
   resize: none;
   border: 2px solid #666;
   background-color: rgba(0, 0, 0, 0.5);
-  color: #ffff00;
+  color: whitesmoke;
   text-shadow: 2px 0px 1px rgba(255, 255, 255, 0.4);
 }
 
@@ -330,8 +342,9 @@ body.opera {
 
 *::placeholder {
   font-style: italic;
-  color: #ffff00;
+  color: whitesmoke;
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.475);
+  opacity: 1;
 }
 
 #dataTabsNav,
