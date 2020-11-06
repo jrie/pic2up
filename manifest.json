@@ -3,7 +3,6 @@
     "name": "JanRie",
     "url": "https://github.com/jrie"
   },
-  "default_locale": "en",
   "browser_action": {
     "browser_style": true,
     "default_title": "pic2up - a PicFlash.org uploader",
